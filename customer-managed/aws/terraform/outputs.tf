@@ -51,12 +51,12 @@ output "vpc_arn" {
 }
 
 output "public_subnet_ids" {
-  value       = jsonencode(aws_subnet.public[*].arn)
+  value       = jsonencode(aws_subnet.public.*.arn)
   description = "Public subnets IDs created"
 }
 
 output "private_subnet_ids" {
-  value       = jsonencode(aws_subnet.private[*].arn)
+  value       = jsonencode(aws_subnet.private.*.arn)
   description = "Private subnet IDs created"
 }
 
@@ -91,6 +91,6 @@ output "node_security_group_arn" {
 }
 
 output "byovpc_rpk_user_policy_arns" {
-  value       = values(aws_iam_policy.byovpc_rpk_user)[*].arn
+  value       = jsonencode(values(aws_iam_policy.byovpc_rpk_user).*.arn)
   description = "ARNs of policies associated with the 'rpk user'. Can be used by Redpanda engineers to the assume the role and test provisioning with more limited access."
 }
