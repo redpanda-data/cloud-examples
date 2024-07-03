@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_1" {
     actions = [
       "ec2:DescribeSubnets",
     ]
-    resources = concat(tolist(aws_subnet.public[*].arn), tolist(aws_subnet.private[*].arn))
+    resources = concat(tolist(aws_subnet.public.*.arn), tolist(aws_subnet.private.*.arn))
   }
 
   statement {
@@ -330,7 +330,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_2" {
     actions = [
       "ec2:RunInstances",
     ]
-    resources = concat([aws_security_group.redpanda_agent.arn], tolist(aws_subnet.public[*].arn), tolist(aws_subnet.private[*].arn))
+    resources = concat([aws_security_group.redpanda_agent.arn], tolist(aws_subnet.public.*.arn), tolist(aws_subnet.private.*.arn))
   }
 
   statement {

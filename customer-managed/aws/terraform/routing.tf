@@ -21,21 +21,21 @@ resource "aws_main_route_table_association" "vpc-main-route-table" {
 
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnet_cidrs)
-  subnet_id      = aws_subnet.public[*].id[count.index]
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.main.id
 }
 
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnet_cidrs)
-  subnet_id      = aws_subnet.private[*].id[count.index]
-  route_table_id = aws_route_table.private[*].id[count.index]
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private[count.index].id
 }
 
 # Routes S3 traffic to the local gateway endpoint
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   count           = length(var.private_subnet_cidrs)
   vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = aws_route_table.private[*].id[count.index]
+  route_table_id  = aws_route_table.private[count.index].id
 }
 
 resource "aws_vpc_endpoint_route_table_association" "public_s3" {

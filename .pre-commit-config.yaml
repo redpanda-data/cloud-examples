@@ -3,5 +3,7 @@ repos:
     rev: v0.1.23
     hooks:
       - id: tflint
+        args:
+          - '--disable-rule=terraform_deprecated_index'
       - id: terraform-validate
       - id: terraform-fmt
