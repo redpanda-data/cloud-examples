@@ -558,6 +558,37 @@ data "aws_iam_policy_document" "load_balancer_controller_2" {
       }
     }
   }
+
+  dynamic "statement" {
+    for_each = var.enable_private_link ? ["true"] : []
+    content {
+      effect = "Allow"
+      actions = [
+        "elasticloadbalancing:RegisterTargets",
+        "elasticloadbalancing:DeregisterTargets",
+      ]
+      resources = [
+        "arn:aws:elasticloadbalancing:${var.region}:${local.aws_account_id}:targetgroup/*-rp-*",
+        "arn:aws:elasticloadbalancing:${var.region}:${local.aws_account_id}:targetgroup/*-kf-*/*",
+        "arn:aws:elasticloadbalancing:${var.region}:${local.aws_account_id}:targetgroup/*-console/*"
+      ]
+      condition {
+        test     = "StringEquals"
+        variable = "aws:ResourceTag/redpanda-private-link"
+        values   = ["true"]
+      }
+      dynamic "condition" {
+        for_each = var.condition_tags
+        content {
+          test     = "StringEquals"
+          variable = "aws:ResourceTag/${condition.key}"
+          values = [
+            condition.value,
+          ]
+        }
+      }
+    }
+  }
 }
 
 resource "aws_iam_policy" "load_balancer_controller_policy" {
