@@ -261,6 +261,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_2" {
       "s3:PutObjectTagging",
       "s3:GetObjectVersion",
       "s3:ListBucketVersions",
+      "s3:GetBucketVersioning",
     ]
     resources = [
       aws_s3_bucket.management.arn,
@@ -272,6 +273,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_2" {
     effect = "Allow"
     actions = [
       "s3:ListBucket",
+      "s3:GetBucketVersioning",
     ]
     resources = [
       aws_s3_bucket.redpanda_cloud_storage.arn,
