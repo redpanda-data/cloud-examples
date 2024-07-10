@@ -88,6 +88,14 @@ variable "default_tags" {
   HELP
 }
 
+variable "ignore_tags" {
+  type        = list(string)
+  default     = []
+  description = <<-HELP
+  List of tag keys that will be ignored during reconciliation of this terraform
+  HELP
+}
+
 variable "enable_private_link" {
   type        = bool
   default     = false
