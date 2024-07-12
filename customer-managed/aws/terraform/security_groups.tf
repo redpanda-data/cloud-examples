@@ -1,3 +1,6 @@
+// -----------------------------
+// Redpanda Agent security group
+// -----------------------------
 resource "aws_security_group" "redpanda_agent" {
   name_prefix = "${var.common_prefix}agent-"
   description = "Redpanda agent VM"
@@ -15,6 +18,9 @@ resource "aws_security_group" "redpanda_agent" {
   }
 }
 
+// -----------------------------
+// Connectors security group
+// -----------------------------
 resource "aws_security_group" "connectors" {
   name_prefix = "${var.common_prefix}connect-"
   description = "Redpanda connectors nodes"
@@ -34,6 +40,9 @@ resource "aws_security_group_rule" "connectors" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+// -----------------------------
+// Utility security group
+// -----------------------------
 resource "aws_security_group" "utility" {
   name_prefix = "${var.common_prefix}util-"
   description = "Redpanda utility nodes"
@@ -53,6 +62,9 @@ resource "aws_security_group_rule" "utility" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+// ----------------------------------
+// Redpanda Node Group security group
+// ----------------------------------
 resource "aws_security_group" "redpanda_node_group" {
   name_prefix = "${var.common_prefix}rp-"
   description = "Redpanda cluster nodes"
@@ -92,44 +104,9 @@ resource "aws_security_group_rule" "redpanda_node_group" {
   cidr_blocks       = local.rp_node_group_cidr_blocks
 }
 
-locals {
-  cluster_security_group_rules = {
-    ingress_nodes_443 = {
-      description                = "Node groups to cluster API"
-      protocol                   = "tcp"
-      from_port                  = 443
-      to_port                    = 443
-      type                       = "ingress"
-      source_node_security_group = true
-    }
-    ingress_nodes_from_agent_443 = {
-      description = "Agent to cluster API"
-      protocol    = "tcp"
-      from_port   = 443
-      to_port     = 443
-      type        = "ingress"
-      cidr_blocks = [aws_vpc.redpanda.cidr_block]
-    }
-    egress_nodes_443 = {
-      description                = "Cluster API to node groups"
-      protocol                   = "tcp"
-      from_port                  = 443
-      to_port                    = 443
-      type                       = "egress"
-      source_node_security_group = true
-    }
-    egress_nodes_kubelet = {
-      description                = "Cluster API to node kubelets"
-      protocol                   = "tcp"
-      from_port                  = 10250
-      to_port                    = 10250
-      type                       = "egress"
-      source_node_security_group = true
-    }
-  }
-
-  node_security_group_id = aws_security_group.node.id
-}
+// -----------------------------
+// Cluster security group
+// -----------------------------
 resource "aws_security_group" "cluster" {
   name_prefix = "${var.common_prefix}cluster-"
   description = "EKS cluster security group"
@@ -139,111 +116,49 @@ resource "aws_security_group" "cluster" {
   }
 }
 
-resource "aws_security_group_rule" "cluster" {
-  for_each = { for k, v in local.cluster_security_group_rules : k => v }
+resource "aws_security_group_rule" "cluster_node_groups_to_cluster_api" {
+  description              = "Node groups to cluster API"
+  security_group_id        = aws_security_group.cluster.id
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  type                     = "ingress"
+  source_security_group_id = aws_security_group.node.id
+}
 
+resource "aws_security_group_rule" "cluster_agent_to_cluster_api" {
+  description       = "Agent to cluster API"
   security_group_id = aws_security_group.cluster.id
-  protocol          = each.value.protocol
-  from_port         = each.value.from_port
-  to_port           = each.value.to_port
-  type              = each.value.type
-  description       = try(each.value.description, null)
-  cidr_blocks       = try(each.value.cidr_blocks, null)
-  ipv6_cidr_blocks  = try(each.value.ipv6_cidr_blocks, null)
-  prefix_list_ids   = try(each.value.prefix_list_ids, [])
-  self              = try(each.value.self, null)
-  source_security_group_id = try(
-    each.value.source_security_group_id,
-    try(each.value.source_node_security_group, false) ? local.node_security_group_id : null
-  )
+  protocol          = "tcp"
+  from_port         = 443
+  to_port           = 443
+  type              = "ingress"
+  cidr_blocks       = [aws_vpc.redpanda.cidr_block]
 }
 
-locals {
-  node_security_group_rules = {
-    egress_cluster_443 = {
-      description                   = "Node groups to cluster API"
-      protocol                      = "tcp"
-      from_port                     = 443
-      to_port                       = 443
-      type                          = "egress"
-      source_cluster_security_group = true
-    }
-    ingress_cluster_443 = {
-      description                   = "Cluster API to node groups"
-      protocol                      = "tcp"
-      from_port                     = 443
-      to_port                       = 443
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-    ingress_cluster_kubelet = {
-      description                   = "Cluster API to node kubelets"
-      protocol                      = "tcp"
-      from_port                     = 10250
-      to_port                       = 10250
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-    ingress_self_coredns_tcp = {
-      description = "Node to node CoreDNS"
-      protocol    = "tcp"
-      from_port   = 53
-      to_port     = 53
-      type        = "ingress"
-      self        = true
-    }
-    egress_self_coredns_tcp = {
-      description = "Node to node CoreDNS"
-      protocol    = "tcp"
-      from_port   = 53
-      to_port     = 53
-      type        = "egress"
-      self        = true
-    }
-    ingress_self_coredns_udp = {
-      description = "Node to node CoreDNS"
-      protocol    = "udp"
-      from_port   = 53
-      to_port     = 53
-      type        = "ingress"
-      self        = true
-    }
-    egress_self_coredns_udp = {
-      description = "Node to node CoreDNS"
-      protocol    = "udp"
-      from_port   = 53
-      to_port     = 53
-      type        = "egress"
-      self        = true
-    }
-    egress_https = {
-      description = "Egress all HTTPS to internet"
-      protocol    = "tcp"
-      from_port   = 443
-      to_port     = 443
-      type        = "egress"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-    egress_ntp_tcp = {
-      description = "Egress NTP/TCP to internet"
-      protocol    = "tcp"
-      from_port   = 123
-      to_port     = 123
-      type        = "egress"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-    egress_ntp_udp = {
-      description = "Egress NTP/UDP to internet"
-      protocol    = "udp"
-      from_port   = 123
-      to_port     = 123
-      type        = "egress"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  }
-
-  cluster_security_group_id = aws_security_group.cluster.id
+resource "aws_security_group_rule" "cluster_api_to_node_group" {
+  description              = "Cluster API to node groups"
+  security_group_id        = aws_security_group.cluster.id
+  protocol                 = "tcp"
+  from_port                = 443
+  to_port                  = 443
+  type                     = "egress"
+  source_security_group_id = aws_security_group.node.id
 }
+
+resource "aws_security_group_rule" "cluster_egress_nodes_kubelet" {
+  description              = "Cluster API to node kubelets"
+  security_group_id        = aws_security_group.cluster.id
+  protocol                 = "tcp"
+  from_port                = 10250
+  to_port                  = 10250
+  type                     = "egress"
+  source_security_group_id = aws_security_group.node.id
+}
+
+// -----------------------------
+// Node security group
+// -----------------------------
 resource "aws_security_group" "node" {
   name_prefix = "${var.common_prefix}node-"
   description = "EKS node shared security group"
@@ -253,24 +168,102 @@ resource "aws_security_group" "node" {
   }
 }
 
-resource "aws_security_group_rule" "node" {
-  for_each = { for k, v in local.node_security_group_rules : k => v }
+resource "aws_security_group_rule" "node_groups_to_cluster_api" {
+  description              = "Node groups to cluster API"
+  security_group_id        = aws_security_group.node.id
+  protocol                 = "tcp"
+  from_port                = "443"
+  to_port                  = "443"
+  type                     = "egress"
+  source_security_group_id = aws_security_group.cluster.id
+}
 
-  # Required
+resource "aws_security_group_rule" "cluster_api_to_node_groups" {
+  description              = "Cluster API to node groups"
+  security_group_id        = aws_security_group.node.id
+  protocol                 = "tcp"
+  from_port                = "443"
+  to_port                  = "443"
+  type                     = "ingress"
+  source_security_group_id = aws_security_group.cluster.id
+}
+
+resource "aws_security_group_rule" "cluster_api_to_node_kubelets" {
+  description              = "Cluster API to node kubelets"
+  security_group_id        = aws_security_group.node.id
+  protocol                 = "tcp"
+  from_port                = "10250"
+  to_port                  = "10250"
+  type                     = "ingress"
+  source_security_group_id = aws_security_group.cluster.id
+}
+
+resource "aws_security_group_rule" "node_to_node_coredns" {
+  description       = "Node to node CoreDNS"
   security_group_id = aws_security_group.node.id
-  protocol          = each.value.protocol
-  from_port         = each.value.from_port
-  to_port           = each.value.to_port
-  type              = each.value.type
+  protocol          = "tcp"
+  from_port         = "53"
+  to_port           = "53"
+  type              = "ingress"
+  self              = true
+}
 
-  # Optional
-  description      = try(each.value.description, null)
-  cidr_blocks      = try(each.value.cidr_blocks, null)
-  ipv6_cidr_blocks = try(each.value.ipv6_cidr_blocks, null)
-  prefix_list_ids  = try(each.value.prefix_list_ids, [])
-  self             = try(each.value.self, null)
-  source_security_group_id = try(
-    each.value.source_security_group_id,
-    try(each.value.source_cluster_security_group, false) ? local.cluster_security_group_id : null
-  )
+resource "aws_security_group_rule" "node_to_node_coredns_egress" {
+  description       = "Node to node CoreDNS"
+  security_group_id = aws_security_group.node.id
+  protocol          = "tcp"
+  from_port         = "53"
+  to_port           = "53"
+  type              = "egress"
+  self              = true
+}
+
+resource "aws_security_group_rule" "node_to_node_coredns_udp" {
+  description       = "Node to node CoreDNS"
+  security_group_id = aws_security_group.node.id
+  protocol          = "udp"
+  from_port         = "53"
+  to_port           = "53"
+  type              = "ingress"
+  self              = true
+}
+
+resource "aws_security_group_rule" "node_to_node_coredns_udp_egress" {
+  description       = "Node to node CoreDNS"
+  security_group_id = aws_security_group.node.id
+  protocol          = "udp"
+  from_port         = "53"
+  to_port           = "53"
+  type              = "egress"
+  self              = true
+}
+
+resource "aws_security_group_rule" "egress_all_https_to_internet" {
+  description       = "Egress all HTTPS to internet"
+  security_group_id = aws_security_group.node.id
+  protocol          = "tcp"
+  from_port         = "443"
+  to_port           = "443"
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "egress_ntp_tcp_to_internet" {
+  description       = "Egress NTP/TCP to internet"
+  security_group_id = aws_security_group.node.id
+  protocol          = "tcp"
+  from_port         = "123"
+  to_port           = "123"
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "egress_ntp_udp_to_internet" {
+  description       = "Egress NTP/UDP to internet"
+  security_group_id = aws_security_group.node.id
+  protocol          = "udp"
+  from_port         = "123"
+  to_port           = "123"
+  type              = "egress"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
