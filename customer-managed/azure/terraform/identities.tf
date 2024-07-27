@@ -22,6 +22,12 @@ resource "azurerm_user_assigned_identity" "redpanda_cluster" {
   resource_group_name = azurerm_resource_group.iam.name
 }
 
+resource "azurerm_user_assigned_identity" "aks" {
+  location            = azurerm_resource_group.iam.location
+  name                = "${var.resource_name_prefix}${var.aks_identity_name}"
+  resource_group_name = azurerm_resource_group.iam.name
+}
+
 resource "azurerm_user_assigned_identity" "redpanda_console" {
   location            = azurerm_resource_group.iam.location
   name                = "${var.resource_name_prefix}${var.redpanda_console_identity_name}"

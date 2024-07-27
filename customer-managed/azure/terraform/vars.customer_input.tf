@@ -89,6 +89,14 @@ variable "redpanda_cluster_identity_name" {
   HELP
 }
 
+variable "aks_identity_name" {
+  type        = string
+  default     = "aks-uai"
+  description = <<-HELP
+    The name of user assigned identity for AKS.
+  HELP
+}
+
 variable "redpanda_console_identity_name" {
   type        = string
   default     = "console-uai"

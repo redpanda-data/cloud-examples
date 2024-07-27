@@ -56,18 +56,18 @@ resource "azurerm_role_assignment" "redpanda_agent_iam" {
   role_definition_id = azurerm_role_definition.redpanda_agent.role_definition_resource_id
 }
 
-resource "azurerm_role_assignment" "redpanda_cluster_network_contributor" {
+resource "azurerm_role_assignment" "aks_network_contributor" {
   count = local.create_role_assignment
 
   scope                = azurerm_resource_group.network.id
-  principal_id         = azurerm_user_assigned_identity.redpanda_cluster.principal_id
+  principal_id         = azurerm_user_assigned_identity.aks.principal_id
   role_definition_name = "Network Contributor"
 }
 
 resource "azurerm_role_assignment" "redpanda_private_link" {
   count = local.create_role_assignment
 
-  principal_id       = azurerm_user_assigned_identity.redpanda_cluster.principal_id
+  principal_id       = azurerm_user_assigned_identity.aks.principal_id
   scope              = azurerm_resource_group.redpanda.id
   role_definition_id = azurerm_role_definition.redpanda_private_link.role_definition_resource_id
 }
@@ -89,21 +89,6 @@ resource "azurerm_role_assignment" "redpanda_console" {
   scope              = azurerm_key_vault.console[0].id
   role_definition_id = azurerm_role_definition.redpanda_console.role_definition_resource_id
 }
-
-# federated identity is done in TF provisioner.
-# resource "azurerm_federated_identity_credential" "redpanda_cluster" {
-#   count               = local.create_role_assignment
-#   name                = var.redpanda_cluster_workload_identity_name
-#   resource_group_name = azurerm_resource_group.redpanda.name
-#   audience            = ["api://AzureADTokenExchange"]
-#   ## We know the oidc issuer url only after AKS cluster is created.
-#   ## Check whether RP can come up if this resource is created during cluster creation.
-#   ## If yes, we will have to ask customer to apply when we have the oidc issuer url.
-#   ## In TF, issuer is required. But in AZ cli, it is optional in https://learn.microsoft.com/en-us/cli/azure/identity/federated-credential?view=azure-cli-latest
-#   issuer    = local.aks_oidc_issuer_url
-#   parent_id = azurerm_user_assigned_identity.redpanda_cluster.id
-#   subject   = "system:serviceaccount:${local.redpanda_operator_namespace}:${azurerm_user_assigned_identity.redpanda_cluster.name}"
-# }
 
 resource "azurerm_role_assignment" "cert_manager" {
   count = local.create_role_assignment
