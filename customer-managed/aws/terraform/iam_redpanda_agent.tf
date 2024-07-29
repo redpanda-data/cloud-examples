@@ -337,7 +337,7 @@ data "aws_iam_policy_document" "redpanda_agent2" {
       aws_iam_policy.load_balancer_controller_policy["1"].arn,
       aws_iam_policy.load_balancer_controller_policy["2"].arn,
       # redpanda_agent1 and redpanda_agent2, cannot be referenced by object due to cycle
-      "arn:aws:iam::${local.aws_account_id}:policy/${var.common_prefix}agent-*-*",
+      "arn:aws:iam::${local.aws_account_id}:policy/${var.common_prefix}-agent-*-*",
       aws_iam_policy.cluster_autoscaler_policy.arn,
       aws_iam_policy.redpanda_cloud_storage_manager.arn,
       aws_iam_policy.connectors_secrets_manager.arn,
@@ -658,13 +658,13 @@ data "aws_iam_policy_document" "redpanda_agent_trust_ec2" {
 }
 
 resource "aws_iam_role" "redpanda_agent" {
-  name_prefix        = "${var.common_prefix}agent-"
+  name_prefix        = "${var.common_prefix}-agent-"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.redpanda_agent_trust_ec2.json
 }
 
 resource "aws_iam_instance_profile" "redpanda_agent" {
-  name_prefix = "${var.common_prefix}agent-"
+  name_prefix = "${var.common_prefix}-agent-"
   role        = aws_iam_role.redpanda_agent.name
 }
 
@@ -673,7 +673,7 @@ resource "aws_iam_policy" "redpanda_agent" {
     "1" = data.aws_iam_policy_document.redpanda_agent1
     "2" = data.aws_iam_policy_document.redpanda_agent2
   }
-  name_prefix = "${var.common_prefix}agent-${each.key}-"
+  name_prefix = "${var.common_prefix}-agent-${each.key}-"
   policy      = each.value.json
 }
 
@@ -688,7 +688,7 @@ resource "aws_iam_role_policy_attachment" "redpanda_agent" {
 
 resource "aws_iam_policy" "redpanda_agent_private_link" {
   count       = var.enable_private_link ? 1 : 0
-  name_prefix = "${var.common_prefix}agent-pl-"
+  name_prefix = "${var.common_prefix}-agent-pl-"
   policy      = data.aws_iam_policy_document.redpanda_agent_private_link[0].json
 }
 

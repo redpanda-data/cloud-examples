@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "console_secrets_manager" {
 }
 
 resource "aws_iam_policy" "console_secrets_manager" {
-  name_prefix = "${var.common_prefix}console-scrts-mgr-"
+  name_prefix = "${var.common_prefix}-console-scrts-mgr-"
   path        = "/"
   description = "Redpanda console - grant create/update/delete access to secrets manager"
   policy      = data.aws_iam_policy_document.console_secrets_manager.json
@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "console_secrets_manager_trust" {
 }
 
 resource "aws_iam_role" "console_secrets_manager_redpanda" {
-  name_prefix        = "${var.common_prefix}console-scrts-mgr-"
+  name_prefix        = "${var.common_prefix}-console-scrts-mgr-"
   assume_role_policy = data.aws_iam_policy_document.console_secrets_manager_trust.json
 }
 

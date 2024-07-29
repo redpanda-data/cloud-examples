@@ -2,7 +2,7 @@
 // Redpanda Agent security group
 // -----------------------------
 resource "aws_security_group" "redpanda_agent" {
-  name_prefix = "${var.common_prefix}agent-"
+  name_prefix = "${var.common_prefix}-agent-"
   description = "Redpanda agent VM"
   vpc_id      = aws_vpc.redpanda.id
   ingress     = []
@@ -22,7 +22,7 @@ resource "aws_security_group" "redpanda_agent" {
 // Connectors security group
 // -----------------------------
 resource "aws_security_group" "connectors" {
-  name_prefix = "${var.common_prefix}connect-"
+  name_prefix = "${var.common_prefix}-connect-"
   description = "Redpanda connectors nodes"
   vpc_id      = aws_vpc.redpanda.id
   lifecycle {
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "connectors" {
 // Utility security group
 // -----------------------------
 resource "aws_security_group" "utility" {
-  name_prefix = "${var.common_prefix}util-"
+  name_prefix = "${var.common_prefix}-util-"
   description = "Redpanda utility nodes"
   vpc_id      = aws_vpc.redpanda.id
   lifecycle {
@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "utility" {
 // Redpanda Node Group security group
 // ----------------------------------
 resource "aws_security_group" "redpanda_node_group" {
-  name_prefix = "${var.common_prefix}rp-"
+  name_prefix = "${var.common_prefix}-rp-"
   description = "Redpanda cluster nodes"
   vpc_id      = aws_vpc.redpanda.id
   lifecycle {
@@ -108,7 +108,7 @@ resource "aws_security_group_rule" "redpanda_node_group" {
 // Cluster security group
 // -----------------------------
 resource "aws_security_group" "cluster" {
-  name_prefix = "${var.common_prefix}cluster-"
+  name_prefix = "${var.common_prefix}-cluster-"
   description = "EKS cluster security group"
   vpc_id      = aws_vpc.redpanda.id
   lifecycle {
@@ -160,7 +160,7 @@ resource "aws_security_group_rule" "cluster_egress_nodes_kubelet" {
 // Node security group
 // -----------------------------
 resource "aws_security_group" "node" {
-  name_prefix = "${var.common_prefix}node-"
+  name_prefix = "${var.common_prefix}-node-"
   description = "EKS node shared security group"
   vpc_id      = aws_vpc.redpanda.id
   lifecycle {

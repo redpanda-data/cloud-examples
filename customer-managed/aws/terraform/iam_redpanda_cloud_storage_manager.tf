@@ -33,12 +33,12 @@ data "aws_iam_policy_document" "redpanda_cloud_storage_manager_trust" {
 }
 
 resource "aws_iam_policy" "redpanda_cloud_storage_manager" {
-  name_prefix = "${var.common_prefix}cloud-storage-manager-"
+  name_prefix = "${var.common_prefix}-cloud-storage-manager-"
   policy      = data.aws_iam_policy_document.redpanda_cloud_storage_manager.json
 }
 
 resource "aws_iam_role" "redpanda_cloud_storage_manager" {
-  name_prefix        = "${var.common_prefix}cloud-storage-manager-"
+  name_prefix        = "${var.common_prefix}-cloud-storage-manager-"
   assume_role_policy = data.aws_iam_policy_document.redpanda_cloud_storage_manager_trust.json
 }
 

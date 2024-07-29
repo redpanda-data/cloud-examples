@@ -15,7 +15,7 @@ resource "aws_iam_role" "k8s_cluster" {
   assume_role_policy    = data.aws_iam_policy_document.k8s_cluster_trust.json
   force_detach_policies = true
   max_session_duration  = 3600
-  name_prefix           = "${var.common_prefix}cluster-"
+  name_prefix           = "${var.common_prefix}-cluster-"
   path                  = "/"
 }
 

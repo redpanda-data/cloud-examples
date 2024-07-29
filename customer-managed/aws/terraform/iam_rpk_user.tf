@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_1" {
       aws_iam_role.k8s_cluster.arn,
       aws_iam_role.redpanda_utility_node_group.arn,
       aws_iam_role.connectors_node_group.arn,
-      "arn:aws:iam::${local.aws_account_id}:role/${var.common_prefix}rpk-user-role-*",
+      "arn:aws:iam::${local.aws_account_id}:role/${var.common_prefix}-rpk-user-role-*",
     ]
   }
 
@@ -363,7 +363,7 @@ resource "aws_iam_policy" "byovpc_rpk_user" {
     "1" = data.aws_iam_policy_document.byovpc_rpk_user_1,
     "2" = data.aws_iam_policy_document.byovpc_rpk_user_2,
   }
-  name_prefix = "${var.common_prefix}rpk-user-${each.key}_"
+  name_prefix = "${var.common_prefix}-rpk-user-${each.key}_"
   path        = "/"
   description = "Minimum permissions required for RPK user for BYO VPC"
   policy      = each.value.json

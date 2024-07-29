@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "cluster_autoscaler_policy" {
 }
 
 resource "aws_iam_policy" "cluster_autoscaler_policy" {
-  name_prefix = "${var.common_prefix}rp-autoscaler-"
+  name_prefix = "${var.common_prefix}-rp-autoscaler-"
   policy      = data.aws_iam_policy_document.cluster_autoscaler_policy.json
 }
 
@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "external_dns" {
 }
 
 resource "aws_iam_policy" "external_dns_policy" {
-  name_prefix = "${var.common_prefix}external_dns_policy-"
+  name_prefix = "${var.common_prefix}-external_dns_policy-"
   path        = "/"
   description = "Policy to enable external-dns to manage hosted zones"
   policy      = data.aws_iam_policy_document.external_dns.json
@@ -189,7 +189,7 @@ data "aws_iam_policy_document" "aws_ebs_csi_driver" {
 }
 
 resource "aws_iam_policy" "aws_ebs_csi_driver_policy" {
-  name_prefix = "${var.common_prefix}aws_ebs_csi_driver-"
+  name_prefix = "${var.common_prefix}-aws_ebs_csi_driver-"
   path        = "/"
   description = "Policy to enable EKS nodes to manage and create EBS volumes using the AWS EBS CSI driver"
 
@@ -596,7 +596,7 @@ resource "aws_iam_policy" "load_balancer_controller_policy" {
     "1" : data.aws_iam_policy_document.load_balancer_controller_1
     "2" : data.aws_iam_policy_document.load_balancer_controller_2
   }
-  name_prefix = "${var.common_prefix}load_balancer_controller_${each.key}-"
+  name_prefix = "${var.common_prefix}-load_balancer_controller_${each.key}-"
   path        = "/"
   description = "Policy to enable the load balancer controller to expose load balancers"
   policy      = each.value.json
@@ -638,7 +638,7 @@ data "aws_iam_policy_document" "cert_manager" {
 }
 
 resource "aws_iam_policy" "cert_manager" {
-  name_prefix = "${var.common_prefix}cert_manager_policy-"
+  name_prefix = "${var.common_prefix}-cert_manager_policy-"
   path        = "/"
   description = "Policy to enable cert-manager to manage challenges"
   policy      = data.aws_iam_policy_document.cert_manager.json
@@ -662,7 +662,7 @@ data "aws_iam_policy_document" "utility_node_group_trust" {
 resource "aws_iam_role" "redpanda_utility_node_group" {
   assume_role_policy    = data.aws_iam_policy_document.utility_node_group_trust.json
   force_detach_policies = true
-  name_prefix           = "${var.common_prefix}util-"
+  name_prefix           = "${var.common_prefix}-util-"
   path                  = "/"
 }
 
@@ -684,7 +684,7 @@ resource "aws_iam_role_policy_attachment" "external_dns_utility_nodes" {
 }
 
 resource "aws_iam_instance_profile" "utility" {
-  name_prefix = "${var.common_prefix}util-"
+  name_prefix = "${var.common_prefix}-util-"
   path        = "/"
   role        = aws_iam_role.redpanda_utility_node_group.name
 }

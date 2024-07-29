@@ -32,12 +32,12 @@ data "aws_iam_policy_document" "connectors_secrets_manager_trust" {
 }
 
 resource "aws_iam_role" "connectors_secrets_manager" {
-  name_prefix        = "${var.common_prefix}connectors-scrts-mgr-"
+  name_prefix        = "${var.common_prefix}-connectors-scrts-mgr-"
   assume_role_policy = data.aws_iam_policy_document.connectors_secrets_manager_trust.json
 }
 
 resource "aws_iam_policy" "connectors_secrets_manager" {
-  name_prefix = "${var.common_prefix}connectors-scrts-mgr-"
+  name_prefix = "${var.common_prefix}-connectors-scrts-mgr-"
   path        = "/"
   description = "Redpanda connectors - grant read-only access to connectors/* secrets manager"
   policy      = data.aws_iam_policy_document.connectors_secrets_manager.json
