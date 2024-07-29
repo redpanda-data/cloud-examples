@@ -337,7 +337,7 @@ data "aws_iam_policy_document" "redpanda_agent2" {
       aws_iam_policy.load_balancer_controller_policy["1"].arn,
       aws_iam_policy.load_balancer_controller_policy["2"].arn,
       # redpanda_agent1 and redpanda_agent2, cannot be referenced by object due to cycle
-      "arn:aws:iam::${local.aws_account_id}:policy/redpanda-agent-*-*",
+      "arn:aws:iam::${local.aws_account_id}:policy/${var.common_prefix}agent-*-*",
       aws_iam_policy.cluster_autoscaler_policy.arn,
       aws_iam_policy.redpanda_cloud_storage_manager.arn,
       aws_iam_policy.connectors_secrets_manager.arn,
