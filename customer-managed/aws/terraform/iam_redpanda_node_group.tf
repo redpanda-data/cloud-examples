@@ -14,12 +14,12 @@ data "aws_iam_policy_document" "redpanda_node_group_trust" {
 resource "aws_iam_role" "redpanda_node_group" {
   assume_role_policy    = data.aws_iam_policy_document.redpanda_node_group_trust.json
   force_detach_policies = true
-  name_prefix           = "${var.common_prefix}rp-"
+  name_prefix           = "${var.common_prefix}-rp-"
   path                  = "/"
 }
 
 resource "aws_iam_instance_profile" "redpanda_node_group" {
-  name_prefix = "${var.common_prefix}rp-"
+  name_prefix = "${var.common_prefix}-rp-"
   path        = "/"
   role        = aws_iam_role.redpanda_node_group.name
 }

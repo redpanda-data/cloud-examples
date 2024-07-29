@@ -106,7 +106,7 @@ variable "enable_private_link" {
 
 variable "common_prefix" {
   type        = string
-  default     = "redpanda-"
+  default     = "redpanda"
   description = <<-HELP
   Text to be included at the start of the name prefix on any objects supporting name prefixes.
   HELP

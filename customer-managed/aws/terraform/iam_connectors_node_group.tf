@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "connectors_node_group_trust" {
 }
 
 resource "aws_iam_role" "connectors_node_group" {
-  name_prefix           = "${var.common_prefix}connect-"
+  name_prefix           = "${var.common_prefix}-connect-"
   path                  = "/"
   force_detach_policies = true
   tags = merge(
@@ -23,7 +23,7 @@ resource "aws_iam_role" "connectors_node_group" {
 }
 
 resource "aws_iam_instance_profile" "connectors_node_group" {
-  name_prefix = "${var.common_prefix}connect-"
+  name_prefix = "${var.common_prefix}-connect-"
   path        = "/"
   role        = aws_iam_role.connectors_node_group.name
   tags = merge(
