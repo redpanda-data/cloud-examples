@@ -18,7 +18,7 @@ az login
 
 ## Provisioning Redpanda with Private Link
 
-To provision a redpanda with private link there is currently only API support with UX support coming soon. 
+To provision a private Redpanda cluster with Private Link you must use the API. UI support is coming soon.
 
 ### Environment setup
 
@@ -29,7 +29,7 @@ To provision a redpanda with private link there is currently only API support wi
     export RPK_CLOUD_AUTH_AUDIENCE=cloudv2-production.redpanda.cloud
     ```
 
-2. Next obtaion a client id and secret by going to Organizations in the Cloud UI. Navigate to Clients. Select or create a client you would like to use to create the network and cluster. You can copy the ID and secret to your clipboard by clicking the “Copy ID” and “Copy secret” buttons.
+2. Next obtain a client id and secret by going to Organizations in the Cloud UI by navigating to https://cloud.redpanda.com/clients. Select or create a client you would like to use to create the network and cluster. You can copy the ID and secret to your clipboard by clicking the “Copy ID” and “Copy secret” buttons.
     ```
     export CLOUD_CLIENT_ID=<client-ID>
     export CLOUD_CLIENT_SECRET=<client-secret>
@@ -39,10 +39,10 @@ To provision a redpanda with private link there is currently only API support wi
 
     ```
     # Where the redpanda cluster will be provisioned
-    AZURE_SUBSCRIPTION_ID=60fc0bed-3072-4c53-906a-d130a934d520
+    AZURE_SUBSCRIPTION_ID=<redpanda-subscription-id>
 
     # Where you will connect to the private link service fronting redpanda
-    AZURE_PRIVATE_LINK_SUBSCRIPTION_ID=1b88eb19-4c80-4edd-870d-461e83ddcbb5
+    AZURE_PRIVATE_LINK_SUBSCRIPTION_ID=<connection-source-to-redpanda>
     ```
 
 ### Provisioning
@@ -99,6 +99,8 @@ To provision a redpanda with private link there is currently only API support wi
     # NOTE: this should have output
     echo $NETWORK_ID
     ```
+   * NOTE: `region` may different in your case
+   * NOTE: `cidr_block` may be different in your case
 1. Create the redpanda cluster with the allowed subscriptions we set before. NOTE: you can add as many other subscriptions as you would like under `allowed_subscriptions`
 
     ```
@@ -110,10 +112,10 @@ To provision a redpanda with private link there is currently only API support wi
     "resource_group_id": "$RESOURCE_GROUP_ID",
     "network_id": "$NETWORK_ID",
     "region": "uksouth",
-    "throughput_tier": "tier-1-azure-beta",
+    "throughput_tier": "tier-1-azure-v2-x86",
     "type": "TYPE_BYOC",
     "zones": ["uksouth-az1",  "uksouth-az2", "uksouth-az3"],
-    "redpanda_version": "24.1",
+    "redpanda_version": "24.2",
     "azure_private_link": { 
         "allowed_subscriptions": ["$AZURE_PRIVATE_LINK_SUBSCRIPTION_ID"],
         "enabled": true,
@@ -128,6 +130,7 @@ To provision a redpanda with private link there is currently only API support wi
     # NOTE: this should have output
     echo $RP_ID
     ```
+   * NOTE: `region` and `zones` may be different in your case
 1. Run the rpk apply to create the infrastructure for the cluster. This will take about 45 minutes to complete. 
     ```
     rpk login --save --client-id=$CLOUD_CLIENT_ID --client-secret=$CLOUD_CLIENT_SECRET

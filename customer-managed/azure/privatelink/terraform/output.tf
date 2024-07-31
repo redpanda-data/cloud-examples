@@ -52,14 +52,3 @@ output "ssh_private_key" {
 output "private_key_file_path" {
   value = abspath(local_file.private_key.filename)
 }
-
-output "ssh_to_ec2_commands" {
-  description = "SSH to EC2 instance commands"
-  # Terraform go code has issue to unmarshall the output. So no output if running inside the certification tests.
-  value = var.resource_prefix == "" ? {
-    "get_ssh_key_command" : <<EOF
-    cat terraform.tfstate | jq .outputs.ssh_private_key.value | sed 's/"//g' | awk '{gsub(/\\n/,"\n")}1' > ${local.cert_file}; chmod 600 ${local.cert_file}
-    EOF
-    "ssh_command" : format("ssh -i %s redpanda@%s", local.cert_file, azurerm_public_ip.public_ip.ip_address)
-  } : null
-}
