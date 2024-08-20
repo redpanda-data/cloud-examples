@@ -96,7 +96,7 @@ data "aws_iam_policy_document" "redpanda_agent1" {
       "ec2:DescribeVpcAttribute",
     ]
     resources = [
-      aws_vpc.redpanda.arn
+      data.aws_vpc.redpanda.arn
     ]
   }
 

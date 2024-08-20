@@ -4,7 +4,7 @@
 resource "aws_security_group" "redpanda_agent" {
   name_prefix = "${var.common_prefix}-agent-"
   description = "Redpanda agent VM"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   ingress     = []
   egress {
     from_port        = 0
@@ -24,7 +24,7 @@ resource "aws_security_group" "redpanda_agent" {
 resource "aws_security_group" "connectors" {
   name_prefix = "${var.common_prefix}-connect-"
   description = "Redpanda connectors nodes"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   lifecycle {
     create_before_destroy = true
   }
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "connectors" {
 resource "aws_security_group" "utility" {
   name_prefix = "${var.common_prefix}-util-"
   description = "Redpanda utility nodes"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   lifecycle {
     create_before_destroy = true
   }
@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "utility" {
 resource "aws_security_group" "redpanda_node_group" {
   name_prefix = "${var.common_prefix}-rp-"
   description = "Redpanda cluster nodes"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   lifecycle {
     create_before_destroy = true
   }
@@ -110,7 +110,7 @@ resource "aws_security_group_rule" "redpanda_node_group" {
 resource "aws_security_group" "cluster" {
   name_prefix = "${var.common_prefix}-cluster-"
   description = "EKS cluster security group"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   lifecycle {
     create_before_destroy = true
   }
@@ -133,7 +133,7 @@ resource "aws_security_group_rule" "cluster_agent_to_cluster_api" {
   from_port         = 443
   to_port           = 443
   type              = "ingress"
-  cidr_blocks       = [aws_vpc.redpanda.cidr_block]
+  cidr_blocks       = [data.aws_vpc.redpanda.cidr_block]
 }
 
 resource "aws_security_group_rule" "cluster_api_to_node_group" {
@@ -162,7 +162,7 @@ resource "aws_security_group_rule" "cluster_egress_nodes_kubelet" {
 resource "aws_security_group" "node" {
   name_prefix = "${var.common_prefix}-node-"
   description = "EKS node shared security group"
-  vpc_id      = aws_vpc.redpanda.id
+  vpc_id      = data.aws_vpc.redpanda.id
   lifecycle {
     create_before_destroy = true
   }
