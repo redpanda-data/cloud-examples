@@ -330,7 +330,7 @@ data "aws_iam_policy_document" "load_balancer_controller_1" {
     condition {
       test     = "ArnEquals"
       variable = "ec2:Vpc"
-      values   = [aws_vpc.redpanda.arn]
+      values   = [data.aws_vpc.redpanda.arn]
     }
   }
 

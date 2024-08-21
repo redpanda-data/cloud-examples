@@ -11,6 +11,7 @@
 # So that these validations may be performed certain read actions are also suggested for the RPK User.
 
 data "aws_iam_policy_document" "byovpc_rpk_user_1" {
+  count = var.create_rpk_user ? 1 : 0
   statement {
     effect = "Allow"
     actions = [
@@ -86,7 +87,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_1" {
       "ec2:DescribeVpcAttribute",
     ]
     resources = [
-      aws_vpc.redpanda.arn
+      data.aws_vpc.redpanda.arn
     ]
   }
 
@@ -248,6 +249,7 @@ data "aws_iam_policy_document" "byovpc_rpk_user_1" {
 }
 
 data "aws_iam_policy_document" "byovpc_rpk_user_2" {
+  count = var.create_rpk_user ? 1 : 0
   statement {
     effect = "Allow"
     actions = [
@@ -359,13 +361,18 @@ data "aws_iam_policy_document" "byovpc_rpk_user_2" {
   }
 }
 
-resource "aws_iam_policy" "byovpc_rpk_user" {
-  for_each = {
-    "1" = data.aws_iam_policy_document.byovpc_rpk_user_1,
-    "2" = data.aws_iam_policy_document.byovpc_rpk_user_2,
-  }
-  name_prefix = "${var.common_prefix}-rpk-user-${each.key}_"
+resource "aws_iam_policy" "byovpc_rpk_user_1" {
+  count       = var.create_rpk_user ? 1 : 0
+  name_prefix = "${var.common_prefix}-rpk-user-1_"
   path        = "/"
   description = "Minimum permissions required for RPK user for BYO VPC"
-  policy      = each.value.json
+  policy      = data.aws_iam_policy_document.byovpc_rpk_user_1[0].json
+}
+
+resource "aws_iam_policy" "byovpc_rpk_user_2" {
+  count       = var.create_rpk_user ? 1 : 0
+  name_prefix = "${var.common_prefix}-rpk-user-2_"
+  path        = "/"
+  description = "Minimum permissions required for RPK user for BYO VPC"
+  policy      = data.aws_iam_policy_document.byovpc_rpk_user_2[0].json
 }

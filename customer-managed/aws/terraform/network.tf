@@ -1,12 +1,21 @@
+locals {
+  create_vpc = var.vpc_id == "" ? true : false
+}
+
 resource "aws_vpc" "redpanda" {
+  count                = local.create_vpc ? 1 : 0
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 }
 
+data "aws_vpc" "redpanda" {
+  id = local.create_vpc ? aws_vpc.redpanda[0].id : var.vpc_id
+}
+
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
-  vpc_id                  = aws_vpc.redpanda.id
+  vpc_id                  = data.aws_vpc.redpanda.id
   availability_zone_id    = element(var.zones, count.index)
   cidr_block              = var.public_subnet_cidrs[count.index]
   map_public_ip_on_launch = true
@@ -25,7 +34,7 @@ resource "aws_subnet" "public" {
 
 resource "aws_subnet" "private" {
   count                   = length(var.private_subnet_cidrs)
-  vpc_id                  = aws_vpc.redpanda.id
+  vpc_id                  = data.aws_vpc.redpanda.id
   availability_zone_id    = element(var.zones, count.index)
   cidr_block              = var.private_subnet_cidrs[count.index]
   map_public_ip_on_launch = false
@@ -50,7 +59,7 @@ data "aws_vpc_endpoint_service" "s3" {
 # Creates a private gateway vpc endpoint for S3 traffic. So traffic to S3
 # doesn't go through the NAT gateway, which is more expensive.
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.redpanda.id
+  vpc_id            = data.aws_vpc.redpanda.id
   service_name      = data.aws_vpc_endpoint_service.s3.service_name
   vpc_endpoint_type = data.aws_vpc_endpoint_service.s3.service_type
 }
@@ -72,7 +81,7 @@ resource "aws_vpc_endpoint" "s3" {
 # egress rules in the security group and recreates it with the rules specified
 # here. Check the docs for more details.
 resource "aws_default_security_group" "redpanda" {
-  vpc_id  = aws_vpc.redpanda.id
+  vpc_id  = data.aws_vpc.redpanda.id
   ingress = []
   egress  = []
 }

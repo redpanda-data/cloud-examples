@@ -1,10 +1,10 @@
 resource "aws_route_table" "main" {
-  vpc_id = aws_vpc.redpanda.id
+  vpc_id = data.aws_vpc.redpanda.id
 }
 
 resource "aws_route_table" "private" {
   count  = length(var.private_subnet_cidrs)
-  vpc_id = aws_vpc.redpanda.id
+  vpc_id = data.aws_vpc.redpanda.id
 
   tags = merge(
     var.default_tags,
@@ -15,7 +15,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_main_route_table_association" "vpc-main-route-table" {
-  vpc_id         = aws_vpc.redpanda.id
+  vpc_id         = data.aws_vpc.redpanda.id
   route_table_id = aws_route_table.main.id
 }
 

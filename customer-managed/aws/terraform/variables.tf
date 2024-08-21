@@ -111,3 +111,21 @@ variable "common_prefix" {
   Text to be included at the start of the name prefix on any objects supporting name prefixes.
   HELP
 }
+
+variable "create_rpk_user" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  The rpk user is one that can be used to test the minimum necessary permissions. It is not suggested for
+  production use. When true this policy will be created, when false it will be skipped.
+  HELP
+}
+
+variable "vpc_id" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  If the VPC is created and managed outside of this terraform the ID of the VPC should be provided and then VPC
+  creation will be skipped.
+  HELP
+}

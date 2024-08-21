@@ -47,7 +47,7 @@ output "dynamodb_table_arn" {
 }
 
 output "vpc_arn" {
-  value = aws_vpc.redpanda.arn
+  value = data.aws_vpc.redpanda.arn
 }
 
 output "public_subnet_ids" {
@@ -91,7 +91,7 @@ output "node_security_group_arn" {
 }
 
 output "byovpc_rpk_user_policy_arns" {
-  value       = jsonencode(values(aws_iam_policy.byovpc_rpk_user).*.arn)
+  value       = var.create_rpk_user ? jsonencode([aws_iam_policy.byovpc_rpk_user_1[0].arn, aws_iam_policy.byovpc_rpk_user_2[0].arn]) : jsonencode([])
   description = "ARNs of policies associated with the 'rpk user'. Can be used by Redpanda engineers to the assume the role and test provisioning with more limited access."
 }
 
