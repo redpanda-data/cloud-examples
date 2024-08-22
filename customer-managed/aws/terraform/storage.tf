@@ -1,6 +1,7 @@
 # S3 bucket used for tiered storage
 resource "aws_s3_bucket" "redpanda_cloud_storage" {
   bucket_prefix = "redpanda-cloud-storage-"
+  force_destroy = var.force_destroy_cloud_storage
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "redpanda_cloud_storage" {
