@@ -129,3 +129,12 @@ variable "vpc_id" {
   creation will be skipped.
   HELP
 }
+
+variable "force_destroy_cloud_storage" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  When true the cloud storage bucket will be destroyed when running terraform destroy, even if it has contents.
+  Normally recommended to keep this set to false, but may be set to true during certain types of testing.
+  HELP
+}
