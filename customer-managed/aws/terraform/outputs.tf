@@ -95,7 +95,7 @@ output "byovpc_rpk_user_policy_arns" {
   description = "ARNs of policies associated with the 'rpk user'. Can be used by Redpanda engineers to the assume the role and test provisioning with more limited access."
 }
 
-output "agent_permission_boundary" {
+output "permissions_boundary_policy_arn" {
   value       = aws_iam_policy.agent_permission_boundary.arn
   description = "ARN of the policy boundary which is required to be included on any roles created by the Redpanda agent"
 }

@@ -175,6 +175,9 @@ curl -X POST "https://api.redpanda.com/v1beta2/clusters" \
       "cloud_storage_bucket": {
         "arn": "<cloud_storage_bucket_arn from outputs>"
       }
+      "permissions_boundary_policy": {
+        "arn": "<permissions_boundary_policy_arn from outputs>"
+      }
     }
   },
   # <This aws_private_link section is optional, see https://docs.redpanda.com/current/deploy/deployment-option/cloud/aws-privatelink/ for more information>
