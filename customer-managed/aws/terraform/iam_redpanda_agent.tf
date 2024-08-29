@@ -254,7 +254,7 @@ data "aws_iam_policy_document" "redpanda_agent1" {
 
         "arn:aws:ec2:*::image/*",
       ],
-    aws_subnet.private.*.arn)
+    [for o in data.aws_subnet.private : o["arn"]])
   }
 
   statement {

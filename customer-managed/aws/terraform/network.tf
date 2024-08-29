@@ -51,6 +51,17 @@ resource "aws_subnet" "private" {
   )
 }
 
+locals {
+  provided_subnet_ids = var.private_subnet_ids
+  created_subnet_ids  = aws_subnet.private.*.id
+  subnet_ids          = length(var.private_subnet_ids) > 0 ? local.provided_subnet_ids : local.created_subnet_ids
+}
+
+data "aws_subnet" "private" {
+  count = length(local.subnet_ids)
+  id    = local.subnet_ids[count.index]
+}
+
 data "aws_vpc_endpoint_service" "s3" {
   service      = "s3"
   service_type = "Gateway"

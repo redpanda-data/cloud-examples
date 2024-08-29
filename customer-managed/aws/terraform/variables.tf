@@ -44,6 +44,15 @@ variable "private_subnet_cidrs" {
   HELP
 }
 
+variable "private_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-HELP
+  List of private subnet ids if created externally to this terraform. One of private_subnet_cidrs or private_subnet_ids
+  must be provided.
+  HELP
+}
+
 variable "zones" {
   type = list(string)
   default = [

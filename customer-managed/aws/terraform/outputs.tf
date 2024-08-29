@@ -56,8 +56,12 @@ output "public_subnet_ids" {
 }
 
 output "private_subnet_ids" {
-  value       = jsonencode(aws_subnet.private.*.arn)
+  value       = jsonencode([for o in data.aws_subnet.private : o["arn"]])
   description = "Private subnet IDs created"
+  precondition {
+    condition     = length(data.aws_subnet.private) > 0
+    error_message = "Either the variable private_subnet_cidrs or private_subnet_ids is required."
+  }
 }
 
 output "redpanda_agent_security_group_arn" {
