@@ -38,11 +38,6 @@ output "vpc_arn" {
   value = data.aws_vpc.redpanda.arn
 }
 
-output "public_subnet_ids" {
-  value       = jsonencode(aws_subnet.public.*.arn)
-  description = "Public subnets IDs created"
-}
-
 output "private_subnet_ids" {
   value       = jsonencode(aws_subnet.private.*.arn)
   description = "Private subnet IDs created"
