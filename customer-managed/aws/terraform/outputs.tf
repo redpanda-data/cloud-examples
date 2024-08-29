@@ -18,20 +18,8 @@ output "k8s_cluster_role_arn" {
   value = aws_iam_role.k8s_cluster.arn
 }
 
-output "console_secrets_manager_role_arn" {
-  value = aws_iam_role.console_secrets_manager_redpanda.arn
-}
-
-output "redpanda_cloud_storage_manager_role_arn" {
-  value = aws_iam_role.redpanda_cloud_storage_manager.arn
-}
-
 output "agent_instance_profile_arn" {
   value = aws_iam_instance_profile.redpanda_agent.arn
-}
-
-output "connectors_secrets_manager_role_arn" {
-  value = aws_iam_role.connectors_secrets_manager.arn
 }
 
 output "cloud_storage_bucket_arn" {
