@@ -77,9 +77,6 @@ curl -X POST "https://api.redpanda.com/v1beta2/networks" \
       "private_subnets": {
         "arns": [<private_subnet_ids from outputs>]
       },
-      "public_subnets": {
-        "arns": [<public_subnet_ids from outputs>]
-      },
       "vpc": {
         "arn": "<vpc_arn from outputs>"
       }
@@ -142,17 +139,8 @@ curl -X POST "https://api.redpanda.com/v1beta2/clusters" \
       "utility_node_group_instance_profile": {
         "arn": "<utility_node_group_instance_profile_arn from outputs>"
       },
-      "console_secrets_manager_role": {
-        "arn": "<console_secrets_manager_role_arn from outputs>"
-      },
       "connectors_security_group": {
         "arn": "<connectors_security_group_arn from outputs>"
-      },
-      "redpanda_cloud_storage_manager_role": {
-        "arn": "<redpanda_cloud_storage_manager_role_arn from outputs>"
-      },
-      "connectors_secrets_manager_role": {
-        "arn": "<connectors_secrets_manager_role_arn from outputs>"
       },
       "node_security_group": {
         "arn": "<node_security_group_arn from outputs>"
