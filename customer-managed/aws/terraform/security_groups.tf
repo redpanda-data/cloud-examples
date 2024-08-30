@@ -133,7 +133,7 @@ resource "aws_security_group_rule" "cluster_agent_to_cluster_api" {
   from_port         = 443
   to_port           = 443
   type              = "ingress"
-  cidr_blocks       = [data.aws_vpc.redpanda.cidr_block]
+  cidr_blocks       = concat([data.aws_vpc.redpanda.cidr_block], [for o in data.aws_subnet.private : o["cidr_block"]])
 }
 
 resource "aws_security_group_rule" "cluster_api_to_node_group" {
