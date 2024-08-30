@@ -11,7 +11,7 @@ variable "region" {
 
 variable "zones" {
   type        = list(string)
-  default     = ["eastus-az1", "eastus-az2", "eastus-az3"]
+  default     = ["eastus-az2"]
   description = <<-HELP
     Physical availability zone ID. Ex: eastus-az1, eastus-az3, eastus-az2
   HELP
@@ -33,3 +33,4 @@ variable "resource_name_prefix" {
     The prefix added to the name of resource.
   HELP
 }
+
