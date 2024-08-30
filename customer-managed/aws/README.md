@@ -54,6 +54,9 @@ This terraform module outputs a number of ARN values, these will be used as inpu
 After [authenticating](https://redpanda-api-documentation.netlify.app/#auth) to the Public API, issue a create network 
 request using the outputs from the terraform in the previous step.
 
+For more information on the CreateNetwork schema see the 
+[Public API documentation](https://redpanda-api-documentation.netlify.app/#post-/v1beta2/networks).
+
 ```shell
 curl -X POST "https://api.redpanda.com/v1beta2/networks" \
   -H "accept: application/json"\
@@ -107,6 +110,9 @@ The create network request will return a resource_id, you will need this in the 
 # Create Redpanda Cloud Cluster using Public API
 
 Issue a create cluster request using the outputs from the terraform in the prior step.
+
+For more information on the CreateCluster schema see the
+[Public API documentation](https://redpanda-api-documentation.netlify.app/#post-/v1beta2/clusters).
 
 ```shell
 curl -X POST "https://api.redpanda.com/v1beta2/clusters" \
