@@ -16,6 +16,7 @@ variable "redpanda_storage_resource_group_name" {
     The name of the resource group to place Redpanda storage resources.
   HELP
 }
+
 variable "redpanda_network_resource_group_name" {
   type        = string
   default     = "network-rg"
@@ -32,30 +33,6 @@ variable "redpanda_iam_resource_group_name" {
   HELP
 }
 
-variable "redpanda_agent_role_name" {
-  type        = string
-  default     = "agent-role"
-  description = <<-HELP
-    The role name of Redpanda agent.
-  HELP
-}
-
-variable "redpanda_console_role_name" {
-  type        = string
-  default     = "console-role"
-  description = <<-HELP
-    The role name of Redpanda Console.
-  HELP
-}
-
-variable "redpanda_private_link_role_name" {
-  type        = string
-  default     = "private-link-role"
-  description = <<-HELP
-    The role name of Redpanda private link.
-  HELP
-}
-
 variable "redpanda_agent_identity_name" {
   type        = string
   default     = "agent-uai"
@@ -66,16 +43,15 @@ variable "redpanda_agent_identity_name" {
 
 variable "redpanda_cert_manager_identity_name" {
   type        = string
-  default     = "cert_manager-uai"
+  default     = "cert-manager-uai"
   description = <<-HELP
     The name of user assigned identity for cert-manager.
   HELP
 }
 
-
 variable "redpanda_external_dns_identity_name" {
   type        = string
-  default     = "external_dns-uai"
+  default     = "external-dns-uai"
   description = <<-HELP
     The name of user assigned identity for external-dns.
   HELP
@@ -208,12 +184,20 @@ variable "private_subnets" {
     },
     "system-pod" : {
       "cidr" : "10.0.4.0/24",
-      "name" : "snet-system-pod"
+      "name" : "snet-system-pods"
     },
     "system-vnet" : {
       "cidr" : "10.0.3.0/24",
       "name" : "snet-system-vnet"
-    }
+    },
+    "connect-pod" : {
+      "cidr" : "10.0.13.0/24",
+      "name" : "snet-connect-pods"
+    },
+    "connect-vnet" : {
+      "cidr" : "10.0.14.0/24",
+      "name" : "snet-connect-vnet"
+    },
   }
   description = <<-HELP
     A list of CIDR ranges to use for the *private* subnets
