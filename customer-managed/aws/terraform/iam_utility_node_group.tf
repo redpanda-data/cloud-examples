@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "cluster_autoscaler_policy" {
       "autoscaling:TerminateInstanceInAutoScalingGroup",
     ]
     resources = [
-      "arn:aws:autoscaling:${var.region}:${local.aws_account_id}:autoScalingGroup:*:autoScalingGroupName/redpanda-*-util-*",
+      "arn:aws:autoscaling:${var.region}:${local.aws_account_id}:autoScalingGroup:*:autoScalingGroupName/redpanda-*",
     ]
     dynamic "condition" {
       for_each = var.condition_tags
