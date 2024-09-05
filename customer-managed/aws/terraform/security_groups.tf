@@ -75,13 +75,7 @@ resource "aws_security_group" "redpanda_node_group" {
 }
 
 locals {
-  rp_node_group_cidr_blocks = var.public_cluster ? [
-
-    // only used in the event that you want a public cluster, when the variable public_cluster is true
-    "0.0.0.0/0"
-
-    ] : [
-
+  rp_node_group_cidr_blocks = [
     // RFC 6598 reserved prefix for shared address space
     // https://datatracker.ietf.org/doc/html/rfc6598
     "100.64.0.0/10",
@@ -91,9 +85,9 @@ locals {
     "172.16.0.0/12",
     "192.168.0.0/16",
     "10.0.0.0/8",
-
   ]
 }
+
 resource "aws_security_group_rule" "redpanda_node_group" {
   security_group_id = aws_security_group.redpanda_node_group.id
   protocol          = "tcp"

@@ -15,15 +15,8 @@ variable "aws_account_id" {
 }
 
 variable "public_subnet_cidrs" {
-  type = list(string)
-  default = [
-    "10.0.1.0/24",
-    "10.0.3.0/24",
-    "10.0.5.0/24",
-    "10.0.7.0/24",
-    "10.0.9.0/24",
-    "10.0.11.0/24"
-  ]
+  type        = list(string)
+  default     = []
   description = <<-HELP
   One public subnet will be created per cidr in this list.
   HELP
@@ -62,15 +55,6 @@ variable "zones" {
   ]
   description = <<-HELP
   The Availability Zone IDs to assign to the subnets, will be round-robined for each public and private subnet cidr.
-  HELP
-}
-
-variable "public_cluster" {
-  type        = bool
-  default     = false
-  description = <<-HELP
-  When true the security groups will be configured in a way to allow public ingress to redpanda. When false ingress will
-  be restricted to internal addresses.
   HELP
 }
 
@@ -136,6 +120,14 @@ variable "vpc_id" {
   description = <<-HELP
   If the VPC is created and managed outside of this terraform the ID of the VPC should be provided and then VPC
   creation will be skipped.
+  HELP
+}
+
+variable "vpc_cidr_block" {
+  type        = string
+  default     = "10.0.0.0/16"
+  description = <<-HELP
+  If the VPC is created and managed by this terraform this will be the cidr block of that VPC.
   HELP
 }
 
