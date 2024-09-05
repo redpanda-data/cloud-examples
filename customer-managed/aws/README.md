@@ -7,14 +7,14 @@ purposes.
 2. Familiarity with the [Redpanda Public API](https://redpanda-api-documentation.netlify.app/). (e.g. How to 
 authenticate and create a cluster using the API.)
 3. Access to an AWS project in which you’d like to create your cluster.
-4. [Minimum permissions](https://github.com/redpanda-data/cloud-examples/modules/customer-managed/examples/aws/terraform/iam_rpk_user.tf) in that 
+4. [Minimum permissions](https://github.com/redpanda-data/cloud-examples/modules/aws/examples/terraform/iam_rpk_user.tf) in that 
 AWS project. (Note that the link to the minimum permissions is provided simply as documentation, we do not anticipate 
 that you would create the role in that file, it is provided only as a way to communicate the actions that will be 
 required of the employee running rpk byoc apply.)
 
 # Create VPC and other sensitive resources
 
-The [terraform code](https://github.com/redpanda-data/cloud-examples/modules/customer-managed/examples/aws/terraform) contains the 
+The [terraform code](https://github.com/redpanda-data/cloud-examples/modules/aws/examples/terraform) contains the 
 specifications for what resources are expected to exist and how they are expected to be configured.
 
 This terraform code will create the following resources:
@@ -43,7 +43,7 @@ Some of these resources may already exist in your AWS project in which case you 
 and modify references to use a data block instead of the resource.
 
 In particular the resources in the 
-[iam_rpk_user.tf](https://github.com/redpanda-data/cloud-examples/modules/customer-managed/examples/aws/terraform/iam_rpk_user.tf) file 
+[iam_rpk_user.tf](https://github.com/redpanda-data/cloud-examples/modules/aws/examples/terraform/iam_rpk_user.tf) file 
 are not intended to be created but are only provided to serve as documentation of the minimum viable permissions for the 
 employee who will run rpk byoc apply.
 
