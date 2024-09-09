@@ -511,6 +511,21 @@ data "aws_iam_policy_document" "agent_permission_boundary" {
     ]
     resources = ["*"]
   }
+
+  dynamic "statement" {
+    for_each = data.aws_s3_bucket.source_bucket
+    content {
+      effect = "Allow"
+      actions = [
+        "s3:Get*",
+        "s3:List*"
+      ]
+      resources = [
+        "${statement.value.arn}/*",
+        statement.value.arn
+      ]
+    }
+  }
 }
 
 resource "aws_iam_policy" "agent_permission_boundary" {

@@ -139,3 +139,21 @@ variable "force_destroy_cloud_storage" {
   Normally recommended to keep this set to false, but may be set to true during certain types of testing.
   HELP
 }
+
+variable "source_cluster_bucket_names" {
+  type        = set(string)
+  default     = []
+  description = <<-HELP
+  Set of bucket names associated with redpanda clusters for which this cluster may be a read replica. For more information see:
+  https://docs.redpanda.com/redpanda-cloud/get-started/cluster-types/byoc/remote-read-replicas/
+  HELP
+}
+
+variable "reader_cluster_id" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  ID of the redpanda cluster. Only required when source_cluster_bucket_arns is provided. For more information see:
+  https://docs.redpanda.com/redpanda-cloud/get-started/cluster-types/byoc/remote-read-replicas/
+  HELP
+}
