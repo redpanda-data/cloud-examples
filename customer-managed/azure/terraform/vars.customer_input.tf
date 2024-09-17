@@ -11,7 +11,7 @@ variable "redpanda_resource_group_name" {
 
 variable "redpanda_storage_resource_group_name" {
   type        = string
-  default     = "tiered-storage-rg"
+  default     = "storage-rg"
   description = <<-HELP
     The name of the resource group to place Redpanda storage resources.
   HELP
@@ -154,12 +154,20 @@ variable "vnet_addresses" {
 variable "private_subnets" {
   type = map(map(string))
   default = {
-    "agent-private" : {
+    "system-pod" : {
+      "cidr" : "10.0.1.0/24",
+      "name" : "snet-system-pods"
+    },
+    "system-vnet" : {
       "cidr" : "10.0.2.0/24",
+      "name" : "snet-system-vnet"
+    },
+    "agent-private" : {
+      "cidr" : "10.0.3.0/24",
       "name" : "snet-agent-private"
     },
     "rp-0-pods" : {
-      "cidr" : "10.0.6.0/24",
+      "cidr" : "10.0.4.0/24",
       "name" : "snet-rp-0-pods"
     },
     "rp-0-vnet" : {
@@ -167,7 +175,7 @@ variable "private_subnets" {
       "name" : "snet-rp-0-vnet"
     },
     "rp-1-pods" : {
-      "cidr" : "10.0.8.0/24",
+      "cidr" : "10.0.6.0/24",
       "name" : "snet-rp-1-pods"
     },
     "rp-1-vnet" : {
@@ -175,28 +183,28 @@ variable "private_subnets" {
       "name" : "snet-rp-1-vnet"
     },
     "rp-2-pods" : {
-      "cidr" : "10.0.10.0/24",
+      "cidr" : "10.0.8.0/24",
       "name" : "snet-rp-2-pods"
     },
     "rp-2-vnet" : {
       "cidr" : "10.0.9.0/24",
       "name" : "snet-rp-2-vnet"
     },
-    "system-pod" : {
-      "cidr" : "10.0.4.0/24",
-      "name" : "snet-system-pods"
-    },
-    "system-vnet" : {
-      "cidr" : "10.0.3.0/24",
-      "name" : "snet-system-vnet"
-    },
     "connect-pod" : {
-      "cidr" : "10.0.13.0/24",
+      "cidr" : "10.0.10.0/24",
       "name" : "snet-connect-pods"
     },
     "connect-vnet" : {
-      "cidr" : "10.0.14.0/24",
+      "cidr" : "10.0.11.0/24",
       "name" : "snet-connect-vnet"
+    },
+    "kafka-connect-pod" : {
+      "cidr" : "10.0.12.0/24",
+      "name" : "snet-kafka-connect-pods"
+    },
+    "kafka-connect-vnet" : {
+      "cidr" : "10.0.13.0/24",
+      "name" : "snet-kafka-connect-vnet"
     },
   }
   description = <<-HELP
@@ -208,7 +216,7 @@ variable "egress_subnets" {
   type = map(map(string))
   default = {
     "agent-public" : {
-      "cidr" : "10.0.1.0/24",
+      "cidr" : "10.0.0.0/24",
       "name" : "snet-agent-public"
     }
   }
@@ -220,7 +228,7 @@ variable "egress_subnets" {
 variable "reserved_subnet_cidrs" {
   type = map(string)
   default = {
-    "k8s-service" : "10.0.11.0/24"
+    "k8s-service" : "10.0.15.0/24"
   }
   description = <<-HELP
     Reserved CIDRs for AKS
