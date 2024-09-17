@@ -9,7 +9,7 @@ locals {
 
 resource "azurerm_nat_gateway" "redpanda" {
   count                   = local.create_nat
-  name                    = "${var.resource_name_prefix}ngw-${var.region}"
+  name                    = "${var.resource_name_prefix}-ngw-${var.region}"
   location                = var.region
   resource_group_name     = azurerm_resource_group.network.name
   sku_name                = "Standard"
