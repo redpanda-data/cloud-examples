@@ -110,7 +110,7 @@ resource "azurerm_role_definition" "redpanda_private_link" {
   assignable_scopes = [
     azurerm_resource_group.redpanda.id
   ]
-  name        = var.redpanda_private_link_role_name
+  name        = "${var.resource_name_prefix}${var.redpanda_private_link_role_name}"
   scope       = azurerm_resource_group.redpanda.id
   description = "Redpanda AKS Private Link Service"
   permissions {
