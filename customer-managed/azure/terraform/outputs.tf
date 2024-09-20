@@ -133,6 +133,11 @@ output "console_user_assigned_identity_name" {
   value       = azurerm_user_assigned_identity.redpanda_console.name
 }
 
+output "kafka_connect_user_assigned_identity_name" {
+  description = "Redpanda Kafka Connect user assigned identity name"
+  value       = azurerm_user_assigned_identity.kafka_connect.name
+}
+
 output "management_key_vault_name" {
   description = "Management key vault name"
   value       = var.redpanda_management_key_vault_name != "" ? azurerm_key_vault.vault[0].name : ""
