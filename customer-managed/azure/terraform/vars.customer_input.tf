@@ -216,7 +216,7 @@ variable "private_subnets" {
     },
   }
   description = <<-HELP
-    A list of CIDR ranges to use for the *private* subnets
+    A list of CIDR ranges to use for the *private* subnets. They needs to be at least /24.
   HELP
 }
 
@@ -229,7 +229,7 @@ variable "egress_subnets" {
     }
   }
   description = <<-HELP
-    A list of CIDR ranges to use for the *egress* subnets
+    A list of CIDR ranges to use for the *egress* subnets. They needs to be at least /24.
   HELP
 }
 
