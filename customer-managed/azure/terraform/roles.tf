@@ -125,3 +125,21 @@ resource "azurerm_role_definition" "redpanda_private_link" {
     ]
   }
 }
+
+resource "azurerm_role_definition" "kafka_connect" {
+  name        = "${var.resource_name_prefix}${var.kafka_connect_role_name}"
+  description = "Redpanda Kafka Connect Role"
+  scope       = azurerm_resource_group.redpanda.id
+  assignable_scopes = [
+    azurerm_resource_group.redpanda.id
+  ]
+  permissions {
+    # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
+    actions = [
+      "Microsoft.KeyVault/vaults/secrets/read",
+    ]
+    data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/readMetadata/action",
+    ]
+  }
+}

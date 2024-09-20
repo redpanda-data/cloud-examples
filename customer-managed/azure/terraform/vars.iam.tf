@@ -24,3 +24,11 @@ variable "redpanda_private_link_role_name" {
     The role name of Redpanda private link.
   HELP
 }
+
+variable "kafka_connect_role_name" {
+  type        = string
+  default     = "kafka-connect-role"
+  description = <<-HELP
+    The role name of Kafka Connect.
+  HELP
+}

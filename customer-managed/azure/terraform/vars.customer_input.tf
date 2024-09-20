@@ -81,6 +81,14 @@ variable "redpanda_console_identity_name" {
   HELP
 }
 
+variable "kafka_connect_identity_name" {
+  type        = string
+  default     = "kafka-connect-uai"
+  description = <<-HELP
+    The name of user assigned identity for Kafka Connect.
+  HELP
+}
+
 ###########################################################################
 # Storage vars: resource groups and roles
 ###########################################################################

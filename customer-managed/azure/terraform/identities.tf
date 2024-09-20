@@ -33,3 +33,9 @@ resource "azurerm_user_assigned_identity" "redpanda_console" {
   name                = "${var.resource_name_prefix}${var.redpanda_console_identity_name}"
   resource_group_name = azurerm_resource_group.iam.name
 }
+
+resource "azurerm_user_assigned_identity" "kafka_connect" {
+  location            = azurerm_resource_group.iam.location
+  name                = "${var.resource_name_prefix}${var.kafka_connect_identity_name}"
+  resource_group_name = azurerm_resource_group.iam.name
+}

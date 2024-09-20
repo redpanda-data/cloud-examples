@@ -121,3 +121,9 @@ resource "azurerm_role_assignment" "external_dns_rgreader" {
   principal_type = "ServicePrincipal"
 }
 
+resource "azurerm_role_assignment" "kafka_connect" {
+  count              = local.create_role_assignment
+  principal_id       = azurerm_user_assigned_identity.kafka_connect.principal_id
+  scope              = azurerm_key_vault.console[0].id
+  role_definition_id = azurerm_role_definition.kafka_connect.role_definition_resource_id
+}
