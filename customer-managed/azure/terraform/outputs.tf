@@ -10,7 +10,7 @@ output "management_bucket_storage_container_name" {
 
 output "vnet_name" {
   description = "VNet name"
-  value       = azurerm_virtual_network.redpanda.name
+  value       = local.vnet_name
 }
 
 output "agent_private_subnet_name" {
@@ -210,9 +210,9 @@ output "networks" {
   description = "Networks"
   value = jsonencode({
     "vnet" : {
-      "name" : azurerm_virtual_network.redpanda.name,
-      "resource_group" : azurerm_virtual_network.redpanda.resource_group_name,
-      "address_space" : join(",", azurerm_virtual_network.redpanda.address_space)
+      "name" : local.vnet_name,
+      "resource_group" : local.vnet.resource_group_name,
+      "address_space" : join(",", local.vnet.address_space)
     },
     "private-subnets" : {
       for k, v in azurerm_subnet.private : k => {
