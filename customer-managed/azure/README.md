@@ -32,7 +32,7 @@ Customer Managed Resources can be broken down into the following groups. You can
 
 The variable files contain the variables that allow you to modify to meet your specific needs.
 - `vars.azure.tf`:  It contains the variables related to Azure credentials.
-- `vars.condition.tf`: It contains the conditional variables on whether to e.g. create VNET.
+- `vars.condition.tf`: It contains the conditional variables on whether to e.g. create NAT.
 - `vars.customer_input.tf`: It contains the variables needed for creating a cluster, which are required when using the Cloud API to create one.
 - `vars.iam.tf`: It contains the variables related to IAM roles.
 - `vars.misc.tf`: It contains the variables, region, zones, tags and resource name prefix.
@@ -65,7 +65,6 @@ Create a JSON file called `byovnet.auto.tfvars.json` inside the Terraform direct
   "redpanda_management_key_vault_name": "",
   "redpanda_console_key_vault_name": "",
   "vnet_name": "",
-  "create_vnet": true|false,
   "vnet_addresses": "10.0.0.0/20",
   "private_subnets": {},
   "egress_subnets": {},

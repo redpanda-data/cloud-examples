@@ -145,9 +145,9 @@ variable "redpanda_console_key_vault_name" {
 ###########################################################################
 variable "vnet_name" {
   type        = string
-  default     = "rp-vnet"
+  default     = ""
   description = <<-HELP
-  The name of the network to be created.
+  The name of the network. If empty, a VNET will be created.
   HELP
 }
 

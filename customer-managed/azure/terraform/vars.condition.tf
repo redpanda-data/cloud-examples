@@ -14,11 +14,3 @@ variable "create_nat" {
   HELP
 }
 
-variable "create_vnet" {
-  type        = bool
-  default     = true
-  description = <<-HELP
-  Whether to create VNET
-  HELP
-}
-

@@ -36,7 +36,6 @@ No modules.
 | [azurerm_role_assignment.cert_manager](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.external_dns_rgreader](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.external_dns_zone_contributor](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
-| [azurerm_role_assignment.kafka_connect](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.redpanda_agent_iam](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.redpanda_agent_network](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.redpanda_agent_redpanda](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
@@ -45,7 +44,6 @@ No modules.
 | [azurerm_role_assignment.redpanda_console](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.redpanda_private_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
 | [azurerm_role_assignment.vault_secrets_officer](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_assignment) | resource |
-| [azurerm_role_definition.kafka_connect](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_definition) | resource |
 | [azurerm_role_definition.redpanda_agent](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_definition) | resource |
 | [azurerm_role_definition.redpanda_console](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_definition) | resource |
 | [azurerm_role_definition.redpanda_private_link](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/role_definition) | resource |
@@ -60,13 +58,13 @@ No modules.
 | [azurerm_user_assigned_identity.aks](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.cert_manager](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.external_dns](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
-| [azurerm_user_assigned_identity.kafka_connect](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.redpanda_agent](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.redpanda_cluster](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_user_assigned_identity.redpanda_console](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_network.redpanda](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/resources/virtual_network) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/data-sources/client_config) | data source |
 | [azurerm_location.redpanda](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/data-sources/location) | data source |
+| [azurerm_virtual_network.redpanda](https://registry.terraform.io/providers/hashicorp/azurerm/3.98.0/docs/data-sources/virtual_network) | data source |
 
 ## Inputs
 
@@ -83,8 +81,6 @@ No modules.
 | <a name="input_create_nat"></a> [create\_nat](#input\_create\_nat) | Whether to create NAT gateway and its assoications | `bool` | `true` | no |
 | <a name="input_create_role_assignment"></a> [create\_role\_assignment](#input\_create\_role\_assignment) | Whether to create role assigments. | `bool` | `true` | no |
 | <a name="input_egress_subnets"></a> [egress\_subnets](#input\_egress\_subnets) | A list of CIDR ranges to use for the *egress* subnets. They needs to be at least /24. | `map(map(string))` | <pre>{<br>  "agent-public": {<br>    "cidr": "10.0.0.0/24",<br>    "name": "snet-agent-public"<br>  }<br>}</pre> | no |
-| <a name="input_kafka_connect_identity_name"></a> [kafka\_connect\_identity\_name](#input\_kafka\_connect\_identity\_name) | The name of user assigned identity for Kafka Connect. | `string` | `"kafka-connect-uai"` | no |
-| <a name="input_kafka_connect_role_name"></a> [kafka\_connect\_role\_name](#input\_kafka\_connect\_role\_name) | The role name of Kafka Connect. | `string` | `"kafka-connect-role"` | no |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | A list of CIDR ranges to use for the *private* subnets. They needs to be at least /24. | `map(map(string))` | <pre>{<br>  "agent-private": {<br>    "cidr": "10.0.3.0/24",<br>    "name": "snet-agent-private"<br>  },<br>  "connect-pod": {<br>    "cidr": "10.0.10.0/24",<br>    "name": "snet-connect-pods"<br>  },<br>  "connect-vnet": {<br>    "cidr": "10.0.11.0/24",<br>    "name": "snet-connect-vnet"<br>  },<br>  "kafka-connect-pod": {<br>    "cidr": "10.0.12.0/24",<br>    "name": "snet-kafka-connect-pods"<br>  },<br>  "kafka-connect-vnet": {<br>    "cidr": "10.0.13.0/24",<br>    "name": "snet-kafka-connect-vnet"<br>  },<br>  "rp-0-pods": {<br>    "cidr": "10.0.4.0/24",<br>    "name": "snet-rp-0-pods"<br>  },<br>  "rp-0-vnet": {<br>    "cidr": "10.0.5.0/24",<br>    "name": "snet-rp-0-vnet"<br>  },<br>  "rp-1-pods": {<br>    "cidr": "10.0.6.0/24",<br>    "name": "snet-rp-1-pods"<br>  },<br>  "rp-1-vnet": {<br>    "cidr": "10.0.7.0/24",<br>    "name": "snet-rp-1-vnet"<br>  },<br>  "rp-2-pods": {<br>    "cidr": "10.0.8.0/24",<br>    "name": "snet-rp-2-pods"<br>  },<br>  "rp-2-vnet": {<br>    "cidr": "10.0.9.0/24",<br>    "name": "snet-rp-2-vnet"<br>  },<br>  "system-pod": {<br>    "cidr": "10.0.1.0/24",<br>    "name": "snet-system-pods"<br>  },<br>  "system-vnet": {<br>    "cidr": "10.0.2.0/24",<br>    "name": "snet-system-vnet"<br>  }<br>}</pre> | no |
 | <a name="input_redpanda_agent_identity_name"></a> [redpanda\_agent\_identity\_name](#input\_redpanda\_agent\_identity\_name) | The name of user assigned identity for Redpanda agent. | `string` | `"agent-uai"` | no |
 | <a name="input_redpanda_agent_role_name"></a> [redpanda\_agent\_role\_name](#input\_redpanda\_agent\_role\_name) | The role name of Redpanda agent. | `string` | `"agent-role"` | no |
@@ -110,7 +106,7 @@ No modules.
 | <a name="input_resource_name_prefix"></a> [resource\_name\_prefix](#input\_resource\_name\_prefix) | The prefix added to the name of resource. | `string` | `"pz-"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to use when labeling resources. These will be set inside the provider block<br>as default tags. | `map(string)` | `{}` | no |
 | <a name="input_vnet_addresses"></a> [vnet\_addresses](#input\_vnet\_addresses) | The list of IP address prefixes used by vnet. | `list(string)` | <pre>[<br>  "10.0.0.0/20"<br>]</pre> | no |
-| <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | The name of the network to be created. | `string` | `"rp-vnet"` | no |
+| <a name="input_vnet_name"></a> [vnet\_name](#input\_vnet\_name) | The name of the network. If empty, a VNET will be created. | `string` | `""` | no |
 | <a name="input_zones"></a> [zones](#input\_zones) | Physical availability zone ID. Ex: eastus-az1, eastus-az3, eastus-az2 | `list(string)` | <pre>[<br>  "eastus-az2"<br>]</pre> | no |
 
 ## Outputs

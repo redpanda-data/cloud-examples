@@ -1,10 +1,10 @@
 locals {
-  vnet      = var.create_vnet ? azurerm_virtual_network.redpanda[0] : data.azurerm_virtual_network.redpanda[0]
+  vnet      = data.azurerm_virtual_network.redpanda
   vnet_name = local.vnet.name
 }
 resource "azurerm_virtual_network" "redpanda" {
-  count               = var.create_vnet ? 1 : 0
-  name                = "${var.resource_name_prefix}${var.vnet_name}"
+  count               = var.vnet_name == "" ? 1 : 0
+  name                = "${var.resource_name_prefix}rp-vnet"
   location            = var.region
   resource_group_name = azurerm_resource_group.network.name
   address_space       = var.vnet_addresses
@@ -13,9 +13,7 @@ resource "azurerm_virtual_network" "redpanda" {
 }
 
 data "azurerm_virtual_network" "redpanda" {
-  count = var.create_vnet ? 0 : 1
-
-  name                = var.vnet_name
+  name                = var.vnet_name == "" ? azurerm_virtual_network.redpanda[0].name : var.vnet_name
   resource_group_name = azurerm_resource_group.network.name
 }
 
