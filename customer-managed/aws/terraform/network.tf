@@ -1,5 +1,33 @@
 locals {
   create_vpc = var.vpc_id == "" ? true : false
+
+  # We start from the given set of explicitly selected zones and add random
+  # zones to have at least min_zones AZs, no matter if multi-az or single-az.
+  min_zones = 3
+
+  zones = (
+    length(var.zones) >= local.min_zones
+    ? var.zones
+    : concat(var.zones, slice(random_shuffle.az.result, 0, local.min_zones - length(var.zones)))
+  )
+}
+
+data "aws_availability_zones" "available_additional_zones" {
+  state = "available"
+
+  # Don't include local zones since they require explicit opt-in by
+  # customers.
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+
+  # We exclude prohibited zones as well as zones explicitly selected
+  exclude_zone_ids = concat(var.network_exclude_zone_ids, var.zones)
+}
+
+resource "random_shuffle" "az" {
+  input = data.aws_availability_zones.available_additional_zones.zone_ids
 }
 
 resource "aws_vpc" "redpanda" {
@@ -16,7 +44,7 @@ data "aws_vpc" "redpanda" {
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
   vpc_id                  = data.aws_vpc.redpanda.id
-  availability_zone_id    = element(var.zones, count.index)
+  availability_zone_id    = element(local.zones, count.index)
   cidr_block              = var.public_subnet_cidrs[count.index]
   map_public_ip_on_launch = true
 
@@ -35,7 +63,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   count                   = length(var.private_subnet_cidrs)
   vpc_id                  = data.aws_vpc.redpanda.id
-  availability_zone_id    = element(var.zones, count.index)
+  availability_zone_id    = element(local.zones, count.index)
   cidr_block              = var.private_subnet_cidrs[count.index]
   map_public_ip_on_launch = false
 

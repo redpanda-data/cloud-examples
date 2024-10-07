@@ -157,3 +157,12 @@ variable "reader_cluster_id" {
   https://docs.redpanda.com/redpanda-cloud/get-started/cluster-types/byoc/remote-read-replicas/
   HELP
 }
+
+variable "network_exclude_zone_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-HELP
+  A list of availability zone IDs to exclude from automatic AZ selection. Optional.
+  Only used when network_multi_az is true.
+  HELP
+}
