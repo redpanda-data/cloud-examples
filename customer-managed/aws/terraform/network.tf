@@ -120,6 +120,7 @@ resource "aws_vpc_endpoint" "s3" {
 # egress rules in the security group and recreates it with the rules specified
 # here. Check the docs for more details.
 resource "aws_default_security_group" "redpanda" {
+  count   = local.create_vpc ? 1 : 0
   vpc_id  = data.aws_vpc.redpanda.id
   ingress = []
   egress  = []

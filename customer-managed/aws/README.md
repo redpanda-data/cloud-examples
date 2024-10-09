@@ -4,7 +4,10 @@ This repository contains [Terraform](https://developer.hashicorp.com/terraform) 
 customers are responsible for creating in association with a Redpanda customer-managed VPC cluster. These resources
 should be created in advance by the customer and then provided to Redpanda during cluster creation.
 
-> There may be resources in this repository that already exist within your environment (for example, the VPC) that you don't want to create. Variables are provided for this purpose.
+> There may be resources in this repository that already exist within your environment (for example, the VPC) that you 
+> don't want to create. Variables are provided for this purpose.
+
+> This code is provided as examples and should be reviewed to ensure it adheres to policies within your organization.
 
 # Prerequisites
 
