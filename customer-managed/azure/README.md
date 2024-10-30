@@ -54,6 +54,7 @@ Create a JSON file called `byovnet.auto.tfvars.json` inside the Terraform direct
   "redpanda_iam_resource_group_name": "",
   "redpanda_agent_identity_name": "",
   "redpanda_external_dns_identity_name": "",
+  "redpanda_cert_manager_identity_name": "",
   "redpanda_cluster_identity_name": "",
   "aks_identity_name": "",
   "redpanda_console_identity_name": "",
@@ -207,7 +208,7 @@ Follow [here](https://docs.redpanda.com/redpanda-cloud/manage/api/cloud-api-quic
 cluster_post_body=`cat << EOF
 {
   "cloud_provider": "CLOUD_PROVIDER_AZURE",
-  "connection_type": "CONNECTION_TYPE_PUBLIC",
+  "connection_type": "CONNECTION_TYPE_PRIVATE",
   "name": "$cluster_name",
   "resource_group_id": "$namespace_id",
   "network_id": "$network_id",
