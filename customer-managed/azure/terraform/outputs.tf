@@ -85,22 +85,22 @@ output "egress_subnet_name" {
 
 output "redpanda_resource_group_name" {
   description = "Redpanda resource group name"
-  value       = azurerm_resource_group.redpanda.name
+  value       = "${var.resource_group_name_prefix}${var.redpanda_resource_group_name}"
 }
 
 output "storage_resource_group_name" {
   description = "Storage resource group name"
-  value       = azurerm_resource_group.storage.name
+  value       = "${var.resource_group_name_prefix}${var.redpanda_storage_resource_group_name}"
 }
 
 output "network_resource_group_name" {
   description = "Network resource group name"
-  value       = azurerm_resource_group.network.name
+  value       = "${var.resource_group_name_prefix}${var.redpanda_network_resource_group_name}"
 }
 
 output "iam_resource_group_name" {
   description = "IAM resource group name"
-  value       = azurerm_resource_group.iam.name
+  value       = "${var.resource_group_name_prefix}${var.redpanda_iam_resource_group_name}"
 }
 
 output "agent_user_assigned_identity_name" {
@@ -167,20 +167,20 @@ output "resource_groups" {
   description = "Resource groups"
   value = jsonencode({
     "redpanda" : {
-      "name" : azurerm_resource_group.redpanda.name,
-      "id" : azurerm_resource_group.redpanda.id
+      "name" : local.redpanda_resource_group.name,
+      "id" : local.redpanda_resource_group.id
     },
     "storage" : {
-      "name" : azurerm_resource_group.storage.name,
-      "id" : azurerm_resource_group.storage.id
+      "name" : local.redpanda_storage_resource_group.name,
+      "id" : local.redpanda_storage_resource_group.id
     },
     "network" : {
-      "name" : azurerm_resource_group.network.name,
-      "id" : azurerm_resource_group.network.id
+      "name" : local.redpanda_network_resource_group.name,
+      "id" : local.redpanda_network_resource_group.id
     },
     "iam" : {
-      "name" : azurerm_resource_group.iam.name,
-      "id" : azurerm_resource_group.iam.id
+      "name" : local.redpanda_iam_resource_group.name,
+      "id" : local.redpanda_iam_resource_group.id
     }
   })
 }

@@ -1,7 +1,7 @@
 resource "azurerm_role_definition" "redpanda_agent" {
-  assignable_scopes = toset([azurerm_resource_group.redpanda.id, azurerm_resource_group.network.id, azurerm_resource_group.storage.id, azurerm_resource_group.iam.id])
+  assignable_scopes = toset(local.resource_group_ids)
   name              = "${var.resource_name_prefix}${var.redpanda_agent_role_name}"
-  scope             = azurerm_resource_group.redpanda.id
+  scope             = local.redpanda_resource_group.id
   description       = "Redpanda Agent Role"
   permissions {
 
@@ -82,14 +82,16 @@ resource "azurerm_role_definition" "redpanda_agent" {
       "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/add/action"
     ]
   }
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_role_definition" "redpanda_console" {
   name        = "${var.resource_name_prefix}${var.redpanda_console_role_name}"
   description = "Redpanda Console Role"
-  scope       = azurerm_resource_group.redpanda.id
+  scope       = local.redpanda_resource_group.id
   assignable_scopes = [
-    azurerm_resource_group.redpanda.id
+    local.redpanda_resource_group.id
   ]
   permissions {
     # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
@@ -104,14 +106,16 @@ resource "azurerm_role_definition" "redpanda_console" {
       "Microsoft.KeyVault/vaults/secrets/setSecret/action"
     ]
   }
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_role_definition" "redpanda_private_link" {
   assignable_scopes = [
-    azurerm_resource_group.redpanda.id
+    local.redpanda_resource_group.id
   ]
   name        = "${var.resource_name_prefix}${var.redpanda_private_link_role_name}"
-  scope       = azurerm_resource_group.redpanda.id
+  scope       = local.redpanda_resource_group.id
   description = "Redpanda AKS Private Link Service"
   permissions {
 
@@ -124,14 +128,16 @@ resource "azurerm_role_definition" "redpanda_private_link" {
       "Microsoft.Network/privateLinkServices/privateEndpointConnections/delete"
     ]
   }
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_role_definition" "kafka_connect" {
   name        = "${var.resource_name_prefix}${var.kafka_connect_role_name}"
   description = "Redpanda Kafka Connect Role"
-  scope       = azurerm_resource_group.redpanda.id
+  scope       = local.redpanda_resource_group.id
   assignable_scopes = [
-    azurerm_resource_group.redpanda.id
+    local.redpanda_resource_group.id
   ]
   permissions {
     # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
@@ -142,4 +148,6 @@ resource "azurerm_role_definition" "kafka_connect" {
       "Microsoft.KeyVault/vaults/secrets/readMetadata/action",
     ]
   }
+
+  depends_on = [azurerm_resource_group.all]
 }

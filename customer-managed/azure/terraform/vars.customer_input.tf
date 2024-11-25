@@ -94,7 +94,7 @@ variable "kafka_connect_identity_name" {
 ###########################################################################
 variable "redpanda_management_storage_account_name" {
   type        = string
-  default     = "management"
+  default     = "managementa"
   description = <<-HELP
     Azure Blob Storage account name for Redpanda management storage.
   HELP
@@ -102,7 +102,7 @@ variable "redpanda_management_storage_account_name" {
 
 variable "redpanda_management_storage_container_name" {
   type        = string
-  default     = "management"
+  default     = "managementc"
   description = <<-HELP
   Name of the storage container for Redpanda management storage
   HELP
@@ -110,7 +110,7 @@ variable "redpanda_management_storage_container_name" {
 
 variable "redpanda_tiered_storage_account_name" {
   type        = string
-  default     = "tieredstorage"
+  default     = "tieredstoragea"
   description = <<-HELP
     Azure Blob Storage account name for Redpanda tiered storage.
   HELP
@@ -118,7 +118,7 @@ variable "redpanda_tiered_storage_account_name" {
 
 variable "redpanda_tiered_storage_container_name" {
   type        = string
-  default     = "tieredstorage"
+  default     = "tieredstoragec"
   description = <<-HELP
   Name of the storage container for Redpanda tiered storage
   HELP
@@ -126,7 +126,7 @@ variable "redpanda_tiered_storage_container_name" {
 
 variable "redpanda_management_key_vault_name" {
   type        = string
-  default     = "redpandavault"
+  default     = "rp-vault"
   description = <<-HELP
   The name of key vault for Redpanda management
   HELP
@@ -134,7 +134,7 @@ variable "redpanda_management_key_vault_name" {
 
 variable "redpanda_console_key_vault_name" {
   type        = string
-  default     = "consolevault"
+  default     = "console-vault"
   description = <<-HELP
   The name of key vault for Redpanda Console
   HELP
