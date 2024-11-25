@@ -18,8 +18,7 @@ variable "zones" {
 }
 
 variable "tags" {
-  type        = map(string)
-  default     = {}
+  type = map(string)
   description = <<-HELP
     Tags to use when labeling resources. These will be set inside the provider block
     as default tags.
@@ -30,7 +29,14 @@ variable "resource_name_prefix" {
   type        = string
   default     = "pz-"
   description = <<-HELP
-    The prefix added to the name of resource.
+    The prefix added to the name of non resource group resource.
   HELP
 }
 
+variable "resource_group_name_prefix" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+    The prefix added to the name of resource group.
+  HELP
+}

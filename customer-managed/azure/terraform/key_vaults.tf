@@ -2,12 +2,11 @@ locals {
   allowed_subnet_ids = [for s in azurerm_subnet.private : s.id]
 }
 
-
 resource "azurerm_key_vault" "vault" {
   count               = var.redpanda_management_key_vault_name != "" ? 1 : 0
   name                = "${var.resource_name_prefix}${var.redpanda_management_key_vault_name}"
-  resource_group_name = azurerm_resource_group.redpanda.name
-  location            = azurerm_resource_group.redpanda.location
+  resource_group_name = local.redpanda_resource_group_name
+  location            = var.region
   sku_name            = "standard"
   tenant_id           = var.azure_tenant_id
 
@@ -43,13 +42,15 @@ resource "azurerm_key_vault" "vault" {
   }
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_key_vault" "console" {
   count               = var.redpanda_console_key_vault_name != "" ? 1 : 0
   name                = "${var.resource_name_prefix}${var.redpanda_console_key_vault_name}"
-  resource_group_name = azurerm_resource_group.redpanda.name
-  location            = azurerm_resource_group.redpanda.location
+  resource_group_name = local.redpanda_resource_group_name
+  location            = var.region
   sku_name            = "standard"
   tenant_id           = var.azure_tenant_id
 
@@ -85,4 +86,6 @@ resource "azurerm_key_vault" "console" {
   }
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
