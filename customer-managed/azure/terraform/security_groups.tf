@@ -6,17 +6,21 @@ locals {
 resource "azurerm_network_security_group" "redpanda_cluster" {
   name                = "${var.resource_name_prefix}${var.redpanda_security_group_name}"
   location            = var.region
-  resource_group_name = azurerm_resource_group.network.name
+  resource_group_name = local.redpanda_network_resource_group_name
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_network_security_group" "redpanda_connectors" {
   name                = "${var.resource_name_prefix}nsg-${var.region}-connectors"
   location            = var.region
-  resource_group_name = azurerm_resource_group.network.name
+  resource_group_name = local.redpanda_network_resource_group_name
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_network_security_rule" "allow_inbound_to_redpanda_brokers_nodeport" {
@@ -32,7 +36,7 @@ resource "azurerm_network_security_rule" "allow_inbound_to_redpanda_brokers_node
   destination_port_ranges      = ["30644", "30092", "30082", "30081"]
   source_address_prefixes      = concat(local.rfc1918_prefixes, local.rfc6598_prefixes)
   destination_address_prefixes = ["0.0.0.0/0"]
-  resource_group_name          = azurerm_resource_group.network.name
+  resource_group_name          = local.redpanda_network_resource_group_name
   network_security_group_name  = azurerm_network_security_group.redpanda_cluster.name
 }
 

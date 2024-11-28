@@ -1,30 +1,25 @@
+locals {
+  redpanda_resource_group_name         = "${var.resource_group_name_prefix}${var.redpanda_resource_group_name}"
+  redpanda_storage_resource_group_name = "${var.resource_group_name_prefix}${var.redpanda_storage_resource_group_name}"
+  redpanda_network_resource_group_name = "${var.resource_group_name_prefix}${var.redpanda_network_resource_group_name}"
+  redpanda_iam_resource_group_name     = "${var.resource_group_name_prefix}${var.redpanda_iam_resource_group_name}"
 
+  resource_group_names = distinct([local.redpanda_resource_group_name, local.redpanda_storage_resource_group_name, local.redpanda_network_resource_group_name, local.redpanda_iam_resource_group_name])
 
-resource "azurerm_resource_group" "redpanda" {
-  name     = "${var.resource_name_prefix}${var.redpanda_resource_group_name}"
+  resource_groups                 = { for rg in azurerm_resource_group.all : rg.name => rg }
+  redpanda_resource_group         = local.resource_groups[local.redpanda_resource_group_name]
+  redpanda_storage_resource_group = local.resource_groups[local.redpanda_storage_resource_group_name]
+  redpanda_network_resource_group = local.resource_groups[local.redpanda_network_resource_group_name]
+  redpanda_iam_resource_group     = local.resource_groups[local.redpanda_iam_resource_group_name]
+
+  resource_group_ids = [for rg in azurerm_resource_group.all : rg.id]
+}
+
+resource "azurerm_resource_group" "all" {
+  for_each = toset(local.resource_group_names)
+
+  name     = each.value
   location = var.region
 
   tags = var.tags
 }
-
-resource "azurerm_resource_group" "storage" {
-  name     = "${var.resource_name_prefix}${var.redpanda_storage_resource_group_name}"
-  location = var.region
-
-  tags = var.tags
-}
-
-resource "azurerm_resource_group" "network" {
-  name     = "${var.resource_name_prefix}${var.redpanda_network_resource_group_name}"
-  location = var.region
-
-  tags = var.tags
-}
-
-resource "azurerm_resource_group" "iam" {
-  name     = "${var.resource_name_prefix}${var.redpanda_iam_resource_group_name}"
-  location = var.region
-
-  tags = var.tags
-}
-

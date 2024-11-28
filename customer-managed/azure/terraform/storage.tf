@@ -4,8 +4,8 @@ locals {
 
 resource "azurerm_storage_account" "management" {
   name                     = "${local.resource_name_prefix}${var.redpanda_management_storage_account_name}"
-  resource_group_name      = azurerm_resource_group.redpanda.name
-  location                 = azurerm_resource_group.redpanda.location
+  resource_group_name      = local.redpanda_resource_group_name
+  location                 = var.region
   account_kind             = "StorageV2"
   account_tier             = "Standard"
   account_replication_type = "ZRS"
@@ -28,6 +28,8 @@ resource "azurerm_storage_account" "management" {
   }
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_storage_container" "management" {
@@ -42,8 +44,8 @@ resource "azurerm_storage_container" "management" {
 
 resource "azurerm_storage_account" "tiered_storage" {
   name                     = "${local.resource_name_prefix}${var.redpanda_tiered_storage_account_name}"
-  resource_group_name      = azurerm_resource_group.storage.name
-  location                 = azurerm_resource_group.storage.location
+  resource_group_name      = local.redpanda_storage_resource_group_name
+  location                 = var.region
   account_kind             = "StorageV2"
   account_tier             = "Standard"
   account_replication_type = "ZRS"
@@ -65,6 +67,8 @@ resource "azurerm_storage_account" "tiered_storage" {
   }
 
   tags = var.tags
+
+  depends_on = [azurerm_resource_group.all]
 }
 
 resource "azurerm_storage_container" "tiered_storage" {
