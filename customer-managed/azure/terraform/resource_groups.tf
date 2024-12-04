@@ -6,7 +6,7 @@ locals {
 
   resource_group_names = distinct([local.redpanda_resource_group_name, local.redpanda_storage_resource_group_name, local.redpanda_network_resource_group_name, local.redpanda_iam_resource_group_name])
 
-  resource_groups                 = { for rg in azurerm_resource_group.all : rg.name => rg }
+  resource_groups                 = { for rg in(var.create_resource_groups ? azurerm_resource_group.all : data.azurerm_resource_group.all) : rg.name => rg }
   redpanda_resource_group         = local.resource_groups[local.redpanda_resource_group_name]
   redpanda_storage_resource_group = local.resource_groups[local.redpanda_storage_resource_group_name]
   redpanda_network_resource_group = local.resource_groups[local.redpanda_network_resource_group_name]
@@ -16,10 +16,15 @@ locals {
 }
 
 resource "azurerm_resource_group" "all" {
-  for_each = toset(local.resource_group_names)
+  for_each = var.create_resource_groups ? toset(local.resource_group_names) : []
 
   name     = each.value
   location = var.region
 
   tags = var.tags
+}
+
+data "azurerm_resource_group" "all" {
+  for_each = var.create_resource_groups ? [] : toset(local.resource_group_names)
+  name     = each.value
 }
