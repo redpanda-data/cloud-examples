@@ -1,6 +1,14 @@
 ###########################################################################
 # IAM vars: resource groups and roles
 ###########################################################################
+variable "create_resource_groups" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+    If true, the module will create resource groups for Redpanda resources.
+  HELP
+}
+
 variable "redpanda_resource_group_name" {
   type        = string
   default     = "redpanda-rg"
