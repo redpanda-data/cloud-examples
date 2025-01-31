@@ -258,3 +258,13 @@ output "vault" {
     "redpanda-console" : var.redpanda_console_key_vault_name != "" ? azurerm_key_vault.console[0].id : ""
   })
 }
+
+output "region" {
+  description = "Region"
+  value = var.region
+}
+
+output "zones" {
+  description = "Zones"
+  value = var.zones
+}
