@@ -21,6 +21,8 @@ resource "azurerm_role_definition" "redpanda_agent" {
       "Microsoft.Network/dnszones/SOA/read",
       # Private link read
       "Microsoft.Network/privatelinkservices/read",
+      "Microsoft.Network/privatelinkservices/write",
+      "Microsoft.Network/privatelinkservices/delete",
       # The agent needs access to the storage account in order to access the data
       "Microsoft.Storage/storageAccounts/read",
       # Manage AKS Clusters
