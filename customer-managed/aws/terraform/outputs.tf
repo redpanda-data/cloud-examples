@@ -39,7 +39,7 @@ output "vpc_arn" {
 }
 
 output "private_subnet_ids" {
-  value       = jsonencode([for o in data.aws_subnet.private : o["arn"]])
+  value       = [for o in data.aws_subnet.private : o["arn"]]
   description = "Private subnet IDs created"
   precondition {
     condition     = length(data.aws_subnet.private) > 0
