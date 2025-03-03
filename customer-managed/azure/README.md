@@ -147,108 +147,118 @@ TODO
 
 ## Create Redpanda Network
 You need to create a network with the POST body before creating Redpanda cluster. Replace the variables with the actual values.
-Follow [here](https://docs.redpanda.com/redpanda-cloud/manage/api/cloud-api-quickstart/#try-the-cloud-api) to create a resource group and bearer token.
+Follow [here](https://docs.redpanda.com/redpanda-cloud/manage/api/cloud-api-quickstart/#try-the-cloud-api) to create a Redpanda resource group and bearer token.
 
 ```shell
-network_post_body=`cat << EOF
-{
+export CLUSTER_NAME=mycluster
+export RP_RESOURCE_GROUP=4997057a-9cb9-4920-a777-544eae848480
+network_post_body=$(terraform show --json | jq --arg cluster_name "$CLUSTER_NAME" --arg rg_id "$RP_RESOURCE_GROUP" '{
   "cloud_provider": "CLOUD_PROVIDER_AZURE",
   "cluster_type": "TYPE_BYOC",
-  "name": "$rp_cluster_name",
-  "resource_group_id": "$resource_group_id",
-  "region": "$region",
-   "customer_managed_resources": {
-      "azure" : {
-         "management_bucket" : {
-            "storage_account_name": "$redpanda_management_storage_account_name",
-            "storage_container_name": "$redpanda_management_storage_container_name",
-            "resource_group" : { "name" : "$redpanda_resource_group_name" }
-         },
-         "vnet" : {
-            "name" : "$vnet_name",
-            "resource_group" : { "name" : "$redpanda_network_resource_group_name" }
-         },
-         "subnets" : {
-            "rp_0_pods" : { "name" : "$rp_0_pods_subnet_name" },
-            "rp_0_vnet" : { "name" : "$rp_0_vnet_subnet_name" },
-            "rp_1_pods" : { "name" : "$rp_1_pods_subnet_name" },
-            "rp_1_vnet" : { "name" : "$rp_2_vnet_subnet_name" },
-            "rp_2_pods" : { "name" : "$rp_2_pods_subnet_name" },
-            "rp_2_vnet" : { "name" : "$rp_2_vnet_subnet_name" },
-            "rp_connect_pods" : { "name" : "$rp_connect_pods_subnet_name" },
-            "rp_connect_vnet" : { "name" : "$rp_connect_vnet_subnet_name" },
-            "kafka_connect_pods" : { "name" : "$kafka_connect_pods_subnet_name" },
-            "kafka_connect_vnet" : { "name" : "$kafka_connect_vnet_subnet_name" },
-            "sys_pods" : { "name" : "$system_pods_subnet_name" },
-            "sys_vnet" : { "name" : "$system_vnet_subnet_name" },
-            "rp_agent" :  { "name" : "$rp_agent_subnet_name" },
-            "rp_egress_vnet" : { "name" : "$rp_egress_subnet_name" }
-         }
+  "name": $cluster_name,
+  "resource_group_id": $rg_id,
+  "region": .values.outputs.region.value,
+  "customer_managed_resources": {
+    "azure": {
+      "management_bucket": {
+        "storage_account_name": .values.outputs.management_bucket_storage_account_name.value,
+        "storage_container_name": .values.outputs.management_bucket_storage_container_name.value,
+        "resource_group": { "name": .values.outputs.redpanda_resource_group_name.value }
+      },
+      "vnet": {
+        "name": .values.outputs.vnet_name.value,
+        "resource_group": { "name": .values.outputs.network_resource_group_name.value }
+      },
+      "subnets": {
+        "rp_0_pods": { "name": .values.outputs.rp_0_pods_subnet_name.value },
+        "rp_0_vnet": { "name": .values.outputs.rp_0_vnet_subnet_name.value },
+        "rp_1_pods": { "name": .values.outputs.rp_1_pods_subnet_name.value },
+        "rp_1_vnet": { "name": .values.outputs.rp_1_vnet_subnet_name.value },
+        "rp_2_pods": { "name": .values.outputs.rp_2_pods_subnet_name.value },
+        "rp_2_vnet": { "name": .values.outputs.rp_2_vnet_subnet_name.value },
+        "rp_connect_pods": { "name": .values.outputs.rp_connect_pods_subnet_name.value },
+        "rp_connect_vnet": { "name": .values.outputs.rp_connect_vnet_subnet_name.value },
+        "kafka_connect_pods": { "name": .values.outputs.kafka_connect_pods_subnet_name.value },
+        "kafka_connect_vnet": { "name": .values.outputs.kafka_connect_vnet_subnet_name.value },
+        "sys_pods": { "name": .values.outputs.system_pods_subnet_name.value },
+        "sys_vnet": { "name": .values.outputs.system_vnet_subnet_name.value },
+        "rp_agent": { "name": .values.outputs.agent_private_subnet_name.value },
+        "rp_egress_vnet": { "name": .values.outputs.egress_subnet_name.value }
       }
-   }
-}
-EOF`
+    }
+  }
+}')
 ```
 
 Make Cloud API call to create a Redpanda network and get the network ID from the response in JSON `.operation.metadata.network_id`.
 
 ```shell
-curl -vv -X POST \
+output=$(curl -vv -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $token" \
-  -d "$network_post_body" $PUBLIC_API_ENDPOINT/v1beta2/networks
+  -d "$network_post_body" $PUBLIC_API_ENDPOINT/v1beta2/networks)
+
+export NETWORK_ID=$(echo $output | jq ".resource_id")
+
 ```
 
 ## Create Redpanda Cluster
-You need a network ID to create a Redpanda cluster. Replace the variables with the actual values.
+You need a network ID to create a Redpanda cluster. 
 Follow [here](https://docs.redpanda.com/redpanda-cloud/manage/api/cloud-api-quickstart/#try-the-cloud-api) to create a resource group and bearer token.
 
 ```shell
-cluster_post_body=`cat << EOF
-{
+export CLUSTER_NAME=mycluster
+export RP_RESOURCE_GROUP=4997057a-9cb9-4920-a777-544eae848480
+export NETWORK_ID=cuegs56k7gk1qa7nu7jg
+export TIER=tier-1-azure-beta
+
+cluster_post_body=$(terraform show --json | jq --arg cluster_name "$CLUSTER_NAME" \
+  --arg namespace_id "$RP_RESOURCE_GROUP" \
+  --arg network_id "$NETWORK_ID" \
+  --arg tier "$TIER" \
+  '{
   "cloud_provider": "CLOUD_PROVIDER_AZURE",
   "connection_type": "CONNECTION_TYPE_PUBLIC",
-  "name": "$cluster_name",
-  "resource_group_id": "$namespace_id",
-  "network_id": "$network_id",
-  "region": "$region",
-  "zones": [ $zones ],
-  "throughput_tier": "$tier",
+  "name": $cluster_name,
+  "resource_group_id": $namespace_id,
+  "network_id": $network_id,
+  "region": .values.outputs.region.value,
+  "zones": .values.outputs.zones.value,
+  "throughput_tier": $tier,
   "type": "TYPE_BYOC",
-  "customer_managed_resources" : {
-     "azure" : {
-       "cidrs" : {
-          "aks_service_cidr" : "$aks_subnet_cidr"
-       },
-       "key_vaults": {
-          "console_vault": { "name": "$redpanda_console_key_vault_name" },
-          "management_vault": { "name": "$redpanda_management_key_vault_name" }
-       },
-       "resource_groups" : {
-          "iam_resource_group" : { "name": "$redpanda_iam_resource_group_name" },
-          "redpanda_resource_group" : { "name": "$redpanda_resource_group_name" },
-          "storage_resource_group" : { "name": "$redpanda_storage_resource_group_name" }
-       },
-       "security_groups" : {
-          "redpanda_security_group" : { "name": "$redpanda_security_group_name" }
-       },
-       "tiered_cloud_storage" : {
-         "storage_account_name": "$redpanda_tiered_storage_account_name",
-         "storage_container_name": "$redpanda_tiered_storage_container_name"
-       },
-       "user_assigned_identities" : {
-         "agent_user_assigned_identity": { "name" : "$agent_user_assigned_identity_name" },
-         "aks_user_assigned_identity": { "name" : "$aks_user_assigned_identity_name" },
-         "cert_manager_assigned_identity": { "name" : "$cert_manager_assigned_identity_name" },
-         "external_dns_assigned_identity": { "name" : "$external_dns_assigned_identity_name" },
-         "redpanda_cluster_assigned_identity": { "name" : "$redpanda_cluster_assigned_identity_name" },
-         "redpanda_console_assigned_identity": { "name" : "$redpanda_console_assigned_identity_name" },
-         "kafka_connect_assigned_identity": { "name" : "$kafka_connect_assigned_identity_name" }
-       }
-     }
+  "customer_managed_resources": {
+    "azure": {
+      "cidrs": {
+        "aks_service_cidr": (.values.outputs.networks.value | fromjson | ."subnet-cidrs-aks"."k8s-service")
+      },
+      "key_vaults": {
+        "console_vault": { "name": .values.outputs.console_key_vault_name.value },
+        "management_vault": { "name": .values.outputs.management_key_vault_name.value }
+      },
+      "resource_groups": {
+        "iam_resource_group": { "name": .values.outputs.iam_resource_group_name.value },
+        "redpanda_resource_group": { "name": .values.outputs.redpanda_resource_group_name.value },
+        "storage_resource_group": { "name": .values.outputs.storage_resource_group_name.value }
+      },
+      "security_groups": {
+        "redpanda_security_group": { "name": .values.outputs.redpanda_security_group_name.value }
+      },
+      "tiered_cloud_storage": {
+        "storage_account_name": .values.outputs.tiered_storage_account_name.value,
+        "storage_container_name": .values.outputs.tiered_storage_container_name.value
+      },
+      "user_assigned_identities": {
+        "agent_user_assigned_identity": { "name": .values.outputs.agent_user_assigned_identity_name.value },
+        "aks_user_assigned_identity": { "name": .values.outputs.aks_user_assigned_identity_name.value },
+        "cert_manager_assigned_identity": { "name": .values.outputs.cert_manager_user_assigned_identity_name.value },
+        "external_dns_assigned_identity": { "name": .values.outputs.external_dns_user_assigned_identity_name.value },
+        "redpanda_cluster_assigned_identity": { "name": .values.outputs.cluster_user_assigned_identity_name.value },
+        "redpanda_console_assigned_identity": { "name": .values.outputs.console_user_assigned_identity_name.value },
+        "kafka_connect_assigned_identity": { "name": .values.outputs.kafka_connect_user_assigned_identity_name.value }
+      }
+    }
   }
-}
-EOF`
+}')
 ```
 
 Make Cloud API call to create a Redpanda network and get the network ID from the response in JSON `.operation.metadata.cluster_id`.
