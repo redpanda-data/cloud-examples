@@ -1,9 +1,9 @@
 data "aws_iam_policy_document" "redpanda_connect_node_group_trust" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
   }
