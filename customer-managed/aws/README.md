@@ -113,4 +113,4 @@ vpc_arn = "..."
 These values can also be retrieved at any time by running `terraform output`.
 
 Note these values. They are needed for the next steps. To continue with cluster creation, see 
-[Configure a Customer-Managed VPC on AWS](https://deploy-preview-12--rp-cloud.netlify.app/redpanda-cloud/get-started/cluster-types/byoc/vpc-byo-aws/). 
+[Create a BYOVPC Cluster on AWS](https://docs.redpanda.com/redpanda-cloud/get-started/cluster-types/byoc/aws/vpc-byo-aws/). 
