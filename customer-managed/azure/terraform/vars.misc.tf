@@ -18,7 +18,7 @@ variable "zones" {
 }
 
 variable "tags" {
-  type = map(string)
+  type        = map(string)
   description = <<-HELP
     Tags to use when labeling resources. These will be set inside the provider block
     as default tags.
