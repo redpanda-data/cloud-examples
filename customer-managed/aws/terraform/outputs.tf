@@ -95,3 +95,8 @@ output "permissions_boundary_policy_arn" {
   value       = aws_iam_policy.agent_permission_boundary.arn
   description = "ARN of the policy boundary which is required to be included on any roles created by the Redpanda agent"
 }
+
+output "nat_gateway_id" {
+  value       = aws_nat_gateway.redpanda[0].id
+  description = "The ID of the NAT Gateway"
+}
