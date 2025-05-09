@@ -1,0 +1,66 @@
+variable "resource_prefix" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  The name prefix of resource to be created.
+  HELP
+}
+
+variable "profile" {
+  type        = string
+  default     = "sandbox-cloud"
+  description = <<-HELP
+  AWS profile.
+  HELP
+}
+
+variable "region" {
+  type        = string
+  default     = "us-west-2"
+  description = <<-HELP
+  AWS region.
+  HELP
+}
+
+variable "vpc_id" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  The ID of the VPC where clients accessing RP services via Transit Gateway reside.
+  HELP
+}
+
+variable "rp_id" {
+  type        = string
+  description = <<-HELP
+  Redpanda cluster ID.
+  HELP
+}
+
+variable "rp_kafka_seed_url" {
+  type        = string
+  description = <<-HELP
+  The domain of RP cluster, e.g. seed-1cb35323.d0dmca0c4e8sqqgqbr20.byoc.ign.cloud.redpanda.com:9092
+  HELP
+}
+
+variable "rp_http_proxy_seed_url" {
+  type        = string
+  description = <<-HELP
+  The domain of RP cluster, e.g. https://pandaproxy-c9b46fc1.d0dmca0c4e8sqqgqbr20.byoc.ign.cloud.redpanda.com:30082
+  HELP
+}
+
+variable "rp_schema_registry_url" {
+  type        = string
+  description = <<-HELP
+  The domain of RP cluster, e.g. https://schema-registry-56a88df9.d0dmca0c4e8sqqgqbr20.byoc.ign.cloud.redpanda.com:30081
+  HELP
+}
+
+variable "rp_console_url" {
+  type        = string
+  description = <<-HELP
+  The domain of RP cluster, e.g. https://console-1cb35323.d0dmca0c4e8sqqgqbr20.byoc.ign.cloud.redpanda.com
+  HELP
+}
