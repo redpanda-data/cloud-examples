@@ -22,11 +22,11 @@ variable "region" {
   HELP
 }
 
-variable "vpc_id" {
+variable "subnet_id" {
   type        = string
   default     = ""
   description = <<-HELP
-  The ID of the VPC where clients accessing RP services via Transit Gateway reside.
+  The ID of a subnet where a test client/instance accessing RP services via Transit Gateway is deployed.
   HELP
 }
 

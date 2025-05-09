@@ -37,12 +37,17 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-## Client VPC
+## Client VPC and subnets
+data "aws_subnet" "client" {
+  id = local.client_subnet_id
+}
+
 data "aws_vpc" "client" {
   id = local.client_vpc_id
 }
 
 data "aws_subnets" "client" {
+  count = var.subnet_id == "" ? 0 : 1
   filter {
     name   = "vpc-id"
     values = [local.client_vpc_id]
@@ -50,7 +55,7 @@ data "aws_subnets" "client" {
 }
 
 data "aws_subnet" "client_subnet" {
-  for_each = toset(data.aws_subnets.client.ids)
+  for_each = toset(var.subnet_id == "" ? [] : data.aws_subnets.client[0].ids)
   id       = each.value
 }
 

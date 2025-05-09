@@ -27,7 +27,7 @@ locals {
     subnets[0] # Select the first subnet in each availability zone
   ]
 
-  az_client_subnet_ids = [
+  az_client_subnet_ids = var.subnet_id == "" ? [aws_subnet.client[0].id] : [
     for az, subnets in {
       for subnet_id, subnet in data.aws_subnet.client_subnet :
       subnet.availability_zone => subnet_id...

@@ -5,18 +5,20 @@ locals {
   client_vpc_cidr_block    = "10.10.0.0/16"
   client_subnet_cidr_block = "10.10.1.0/24"
 
-  client_vpc_id = (var.vpc_id == "" ? aws_vpc.client[0].id : var.vpc_id)
+  client_subnet_id = var.subnet_id == "" ? aws_subnet.client[0].id : var.subnet_id
+  client_vpc_id    = var.subnet_id == "" ? aws_vpc.client[0].id : data.aws_subnet.client.vpc_id
 }
 
 resource "aws_vpc" "client" {
-  count                = (var.vpc_id == "" ? 1 : 0)
+  count                = var.subnet_id == "" ? 1 : 0
   cidr_block           = local.client_vpc_cidr_block
   enable_dns_hostnames = true
   enable_dns_support   = true
 }
 
 resource "aws_subnet" "client" {
-  vpc_id     = local.client_vpc_id
+  count      = var.subnet_id == "" ? 1 : 0
+  vpc_id     = aws_vpc.client[0].id
   cidr_block = local.client_subnet_cidr_block
 }
 
@@ -96,7 +98,7 @@ resource "aws_instance" "kafka_test" {
   ami           = random_id.suffix.keepers.ami_id
   instance_type = "t3.nano"
 
-  subnet_id = aws_subnet.client.id
+  subnet_id = local.client_subnet_id
   key_name  = aws_key_pair.generated_key.key_name
 
   user_data = base64encode(local.vm_user_data_with_cloud_config_directive)
@@ -140,7 +142,6 @@ resource "aws_main_route_table_association" "a" {
 }
 
 resource "aws_route_table_association" "route_table_assoc" {
-  for_each       = toset(data.aws_subnets.client.ids)
-  subnet_id      = each.value
+  subnet_id      = local.client_subnet_id
   route_table_id = aws_route_table.route_table.id
 }
