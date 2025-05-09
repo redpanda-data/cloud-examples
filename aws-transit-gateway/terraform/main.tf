@@ -1,8 +1,10 @@
 locals {
-  resource_prefix = (var.resource_prefix) == "" ? "" : replace(var.resource_prefix, "_", "-")
+  resource_prefix    = (var.resource_prefix) == "" ? "" : replace(var.resource_prefix, "_", "-")
+  transit_gateway_id = var.transit_gateway_id == "" ? aws_ec2_transit_gateway.test[0].id : var.transit_gateway_id
 }
 
 resource "aws_ec2_transit_gateway" "test" {
+  count                              = var.transit_gateway_id == "" ? 1 : 0
   description                        = "a transit gateway for routing traffic between client' VPCs and RP's VPC"
   auto_accept_shared_attachments     = "enable"
   default_route_table_association    = "disable"
@@ -12,7 +14,7 @@ resource "aws_ec2_transit_gateway" "test" {
 }
 
 resource "aws_ec2_transit_gateway_route_table" "rp" {
-  transit_gateway_id = aws_ec2_transit_gateway.test.id
+  transit_gateway_id = local.transit_gateway_id
 }
 
 locals {
@@ -38,7 +40,7 @@ locals {
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "rp" {
   subnet_ids                                      = local.az_rp_subnet_ids
-  transit_gateway_id                              = aws_ec2_transit_gateway.test.id
+  transit_gateway_id                              = local.transit_gateway_id
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = true
   vpc_id                                          = data.aws_vpc.rp_vpc.id
@@ -67,7 +69,7 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "rp" {
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "client" {
   subnet_ids                                      = local.az_client_subnet_ids
-  transit_gateway_id                              = aws_ec2_transit_gateway.test.id
+  transit_gateway_id                              = local.transit_gateway_id
   transit_gateway_default_route_table_association = false
   transit_gateway_default_route_table_propagation = true
   vpc_id                                          = local.client_vpc_id
@@ -119,5 +121,5 @@ resource "aws_route" "rp_to_tgw" {
 
   route_table_id         = each.value
   destination_cidr_block = data.aws_vpc.client.cidr_block
-  transit_gateway_id     = aws_ec2_transit_gateway.test.id
+  transit_gateway_id     = local.transit_gateway_id
 }

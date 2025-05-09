@@ -22,11 +22,21 @@ variable "region" {
   HELP
 }
 
+variable "transit_gateway_id" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  The ID of the Transit Gateway to be used.
+  If not provided, a new Transit Gateway will be created.
+  HELP
+}
+
 variable "subnet_id" {
   type        = string
   default     = ""
   description = <<-HELP
   The ID of a subnet where a test client/instance accessing RP services via Transit Gateway is deployed.
+  If not provided, a new VPC and a subnet will be created.
   HELP
 }
 

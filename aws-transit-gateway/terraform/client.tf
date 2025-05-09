@@ -125,7 +125,7 @@ resource "aws_route_table" "route_table" {
   # RP route via TGW
   route {
     cidr_block = data.aws_vpc.rp_vpc.cidr_block
-    gateway_id = aws_ec2_transit_gateway.test.id
+    gateway_id = local.transit_gateway_id
   }
 
   route {
