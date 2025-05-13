@@ -52,3 +52,11 @@ variable "transit_gateway_accepted_accounts" {
   List of AWS accounts to accept Transit Gateway attachments from.
   HELP
 }
+
+variable "transit_gateway_route_table_rp_id" {
+  type        = string
+  default     = ""
+  description = <<-HELP
+  The ID of the Transit Gateway route table to be used for RP VPC.
+  HELP
+}

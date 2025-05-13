@@ -13,10 +13,6 @@ resource "aws_ec2_transit_gateway" "test" {
   security_group_referencing_support = "enable"
 }
 
-resource "aws_ec2_transit_gateway_route_table" "rp" {
-  transit_gateway_id = local.transit_gateway_id
-}
-
 locals {
   # The IDs of a subnet in each availability zone
   # TGW: select one subnet for each Availability Zone to be used by the transit gateway to route traffic.
@@ -36,9 +32,18 @@ locals {
     } :
     subnets[0] # Select the first subnet in each availability zone
   ]
+
+  config_rp_network                 = var.transit_gateway_route_table_rp_id == "" ? 1 : 0
+  transit_gateway_route_table_rp_id = var.transit_gateway_route_table_rp_id == "" ? aws_ec2_transit_gateway_route_table.rp[0].id : var.transit_gateway_route_table_rp_id
+}
+
+resource "aws_ec2_transit_gateway_route_table" "rp" {
+  count              = local.config_rp_network
+  transit_gateway_id = local.transit_gateway_id
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "rp" {
+  count                                           = local.config_rp_network
   subnet_ids                                      = local.az_rp_subnet_ids
   transit_gateway_id                              = local.transit_gateway_id
   transit_gateway_default_route_table_association = false
@@ -52,19 +57,22 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "rp" {
 }
 
 resource "aws_ec2_transit_gateway_route_table_association" "rp" {
-  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
+  count                          = local.config_rp_network
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp[0].id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
 resource "aws_ec2_transit_gateway_route" "rp" {
+  count                          = local.config_rp_network
   destination_cidr_block         = data.aws_vpc.rp_vpc.cidr_block
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
-  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp.id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp[0].id
 }
 
 resource "aws_ec2_transit_gateway_route_table_propagation" "rp" {
-  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
+  count                          = local.config_rp_network
+  transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.rp[0].id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "client" {
@@ -77,22 +85,22 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "client" {
 
 resource "aws_ec2_transit_gateway_route_table_association" "client" {
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.client.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
 resource "aws_ec2_transit_gateway_route" "client" {
   destination_cidr_block         = data.aws_vpc.client.cidr_block
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.client.id
 }
 
 resource "aws_ec2_transit_gateway_route_table_propagation" "client" {
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_vpc_attachment.client.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.rp.id
+  transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
 resource "aws_security_group" "rp_tgw" {
-  name        = "${local.resource_prefix}redpanda-tgw-sg"
+  name        = "${local.resource_prefix}redpanda-tgw-sg-same-account"
   description = "TGW security group for traffic to/from clients"
   vpc_id      = data.aws_vpc.rp_vpc.id
 }

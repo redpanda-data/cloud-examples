@@ -14,6 +14,11 @@ output "instance_id" {
   value       = aws_eip.test_instance_eip.id
 }
 
+output "transit_gateway_route_table_rp_id" {
+  description = "Transit Gateway Route Table ID for Redpanda"
+  value       = local.transit_gateway_route_table_rp_id
+}
+
 locals {
   cert_file = format("/tmp/%s.pem", aws_eip.test_instance_eip.public_ip)
 }
