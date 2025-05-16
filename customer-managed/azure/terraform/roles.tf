@@ -147,7 +147,43 @@ resource "azurerm_role_definition" "kafka_connect" {
       "Microsoft.KeyVault/vaults/secrets/read",
     ]
     data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/getSecret/action",
       "Microsoft.KeyVault/vaults/secrets/readMetadata/action",
+    ]
+  }
+
+  depends_on = [azurerm_resource_group.all]
+}
+
+resource "azurerm_role_definition" "redpanda_connect" {
+  name        = "${var.resource_name_prefix}${var.redpanda_connect_role_name}"
+  description = "Redpanda Connect Role"
+  scope       = local.redpanda_resource_group.id
+  assignable_scopes = [
+    local.redpanda_resource_group.id
+  ]
+  permissions {
+    # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
+    data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/getSecret/action",
+    ]
+  }
+
+  depends_on = [azurerm_resource_group.all]
+}
+
+resource "azurerm_role_definition" "redpanda_connect_api" {
+  name        = "${var.resource_name_prefix}${var.redpanda_connect_api_role_name}"
+  description = "Redpanda Connect API Role"
+  scope       = local.redpanda_resource_group.id
+  assignable_scopes = [
+    local.redpanda_resource_group.id
+  ]
+  permissions {
+    # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
+    data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/readMetadata/action",
+      "Microsoft.KeyVault/vaults/secrets/getSecret/action",
     ]
   }
 

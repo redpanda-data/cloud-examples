@@ -32,3 +32,19 @@ variable "kafka_connect_role_name" {
     The role name of Kafka Connect.
   HELP
 }
+
+variable "redpanda_connect_role_name" {
+  type        = string
+  default     = "redpanda-connect-role"
+  description = <<-HELP
+    The role name of Redpanda Connect.
+  HELP
+}
+
+variable "redpanda_connect_api_role_name" {
+  type        = string
+  default     = "redpanda-connect-api-role"
+  description = <<-HELP
+    The role name of Redpanda Connect API.
+  HELP
+}

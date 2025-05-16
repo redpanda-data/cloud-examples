@@ -103,3 +103,17 @@ resource "azurerm_role_assignment" "kafka_connect" {
   scope              = azurerm_key_vault.console[0].id
   role_definition_id = azurerm_role_definition.kafka_connect.role_definition_resource_id
 }
+
+resource "azurerm_role_assignment" "redpanda_connect" {
+  count              = local.create_role_assignment
+  principal_id       = azurerm_user_assigned_identity.redpanda_connect.principal_id
+  scope              = azurerm_key_vault.console[0].id
+  role_definition_id = azurerm_role_definition.redpanda_connect.role_definition_resource_id
+}
+
+resource "azurerm_role_assignment" "redpanda_connect_api" {
+  count              = local.create_role_assignment
+  principal_id       = azurerm_user_assigned_identity.redpanda_connect_api.principal_id
+  scope              = azurerm_key_vault.console[0].id
+  role_definition_id = azurerm_role_definition.redpanda_connect_api.role_definition_resource_id
+}

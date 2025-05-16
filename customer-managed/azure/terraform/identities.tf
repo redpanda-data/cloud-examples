@@ -53,3 +53,19 @@ resource "azurerm_user_assigned_identity" "kafka_connect" {
 
   depends_on = [azurerm_resource_group.all]
 }
+
+resource "azurerm_user_assigned_identity" "redpanda_connect" {
+  location            = var.region
+  name                = "${var.resource_name_prefix}${var.redpanda_connect_identity_name}"
+  resource_group_name = local.redpanda_iam_resource_group_name
+
+  depends_on = [azurerm_resource_group.all]
+}
+
+resource "azurerm_user_assigned_identity" "redpanda_connect_api" {
+  location            = var.region
+  name                = "${var.resource_name_prefix}${var.redpanda_connect_api_identity_name}"
+  resource_group_name = local.redpanda_iam_resource_group_name
+
+  depends_on = [azurerm_resource_group.all]
+}
