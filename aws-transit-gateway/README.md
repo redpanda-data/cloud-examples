@@ -142,6 +142,9 @@ The test script should confirm successful connectivity to the Redpanda cluster's
 
 If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
 
+- **Remove Test Instance**
+If you don't need the test EC2 instance, you can destroy by running `terraform destroy -auto-approve`.
+
 ## Cross Account Access
 If the Redpanda cluster and client applications are hosted in **different AWS accounts**, you can use the provided Terraform code to set up an AWS Transit Gateway and share it with the client account using AWS Resource Access Manager (RAM).
 
@@ -249,7 +252,7 @@ The Terraform execution will output the IDs of Transit Gateway and route table. 
 
 This step configures the Transit Gateway in the owner account and shares it with the recipient account using AWS Resource Access Manager (RAM).
 
-#### 4.**Recipient Account (Client Applications Account): VPC Transit Gateway Attachment**
+### 4.**Recipient Account (Client Applications Account): VPC Transit Gateway Attachment**
 
 This step involves the recipient account (Client Applications Account) attaching its VPC to the shared Transit Gateway provided by the owner account (Redpanda Cluster Account).
 
@@ -296,7 +299,7 @@ vpc_transit_gateway_attachment_id = "tgw-attach-019f6559ff190dd65"
 
 The owner account will need to accept this attachment request identified `vpc_transit_gateway_attachment_id` by in the next step.
 
-#### 5. **Owner Account (Redpanda Cluster Account): Accept VPC Transit Gateway Attachment**
+### 5. **Owner Account (Redpanda Cluster Account): Accept VPC Transit Gateway Attachment**
 
 This step involves the owner account (Redpanda Cluster Account) accepting the VPC Transit Gateway attachment request from the recipient account (Client Applications Account). This ensures that the client VPC is successfully attached to the Transit Gateway.
 
@@ -338,7 +341,7 @@ This step involves the owner account (Redpanda Cluster Account) accepting the VP
 
 ---
 
-#### 6. **Recipient Account (Client Applications Account): Test Connectivity**
+### 6. **Recipient Account (Client Applications Account): Test Connectivity**
 
 This step involves the recipient account (Client Applications Account) testing the connectivity between the client VPC and the Redpanda cluster through the Transit Gateway.
 It deploys an EC2 instance in the client VPC, and the connectivity tests are performed using a test script that produces and consumes messages.
@@ -416,3 +419,6 @@ ssh_to_ec2_commands = {
 The test script should confirm successful connectivity to the Redpanda cluster's Kafka, HTTP Proxy, and Schema Registry endpoints.
 
 If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
+
+- **Remove Test Instance**
+If you don't need the test EC2 instance, you can destroy by running `terraform destroy -auto-approve`.
