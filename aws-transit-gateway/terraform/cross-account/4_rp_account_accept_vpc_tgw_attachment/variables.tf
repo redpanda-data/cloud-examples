@@ -21,6 +21,14 @@ variable "rp_id" {
   HELP
 }
 
+variable "accept_attachment" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+  Whether to accept the VPC attachment. You might not need to accept the VPC attachment if the accounts are in a same organization.
+  HELP
+}
+
 variable "vpc_attachment_id" {
   type        = string
   description = <<-HELP

@@ -37,18 +37,20 @@ The script automates the generation of a JSON output containing the necessary in
 ### Usage
 To use the script, run the following command:
 ```bash
-./scripts/generate_tf_var_input.sh <rp_id>
+export REDPANDA_ID=<redpanda id>
+./scripts/generate_tf_var_input.sh ${REDPANDA_ID} > aws.auto.tfvars.json
 ```
 
-Replace `<rp_id>` with the Redpanda cluster ID. You can obtain the cluster ID by creating a Redpanda cluster at [Redpanda Cloud](https://cloud.redpanda.com).
+Replace `<redpanda id>` with the Redpanda cluster ID. You can obtain the cluster ID by creating a Redpanda cluster at [Redpanda Cloud](https://cloud.redpanda.com).
 
 ### Example
 ```bash
-./scripts/generate_tf_var_input.sh d0dmca0c4e8sqqgqbr20
+export REDPANDA_ID=d0dmca0c4e8sqqgqbr20
+./scripts/generate_tf_var_input.sh ${REDPANDA_ID} > aws.auto.tfvars.json
 ```
 
 ### Sample Output
-The script outputs a JSON object:
+The script outputs a JSON object and saves the contents in the `aws.auto.tfvars.json` file:
 ```json
 {
   "rp_id": "d0dmca0c4e8sqqgqbr20",
@@ -67,11 +69,12 @@ If the Redpanda cluster and client applications are hosted in the **same AWS acc
 ### 1. Go to the directory `terraform/same-account`.
 
 ### 2. Generate Terraform Input Variables
-   Use the helper script `scripts/generate_tf_var_input.sh` to generate the required Terraform input variables:
-   ```bash
-   ./scripts/generate_tf_var_input.sh <rp_id>
-   ```
-   Replace `<rp_id>` with the Redpanda cluster ID.
+  Use the helper script `scripts/generate_tf_var_input.sh` to generate the required Terraform input variables:
+  ```bash
+  export REDPANDA_ID=<redpanda id>
+  ./scripts/generate_tf_var_input.sh ${REDPANDA_ID} > aws.auto.tfvars.json
+  ```
+  Replace `<rp_id>` with the Redpanda cluster ID.
 
 ### 3. Create Terraform Variable Input File
    Create a Terraform variable input file named `aws.auto.tfvars.json` by using the output above. For example:
@@ -119,31 +122,32 @@ ssh_to_ec2_commands = {
   "test_redpanda_transit_gateway_command" = "/usr/local/bin/test-transit-gateway.sh <rp-user-id> <rp-user-password>"
 }
 ```
+5a. **Create Redpanda User** : Create a Redpanda User in Console and assign an ACL that allows all operations. Save the username and password to use in a later step for verifying connectivity.
 
-- **Configure SSH key**:
+5b. **Configure SSH key**:
    - Use the provided `get_ssh_key_command` to connect to the EC2 instance, e.g.:
      ```bash
      cat terraform.tfstate | jq .outputs.ssh_private_key.value | sed 's/"//g' | awk '{gsub(/\\n/,"\n")}1' > /tmp/35.155.90.103.pem; chmod 600 /tmp/35.155.90.103.pem
      ```
 
-- **SSH to the EC2 Instance**:
+5c. **SSH to the EC2 Instance**:
    - Use the provided `ssh_command` to connect to the EC2 instance, e.g.:
      ```bash
      ssh -i /tmp/35.155.90.103.pem ec2-user@35.155.90.103
      ```
 
-- **Run the Test Script**:
+5d. **Run the Test Script**:
    - Execute the test script to verify connectivity to the Redpanda cluster:
      ```bash
      /usr/local/bin/test-transit-gateway.sh <rp-user-id> <rp-user-password>
      ```
 
-The test script should confirm successful connectivity to the Redpanda cluster's Kafka, HTTP Proxy, and Schema Registry endpoints.
+      The test script should confirm successful connectivity to the Redpanda cluster's Kafka, HTTP Proxy, and Schema Registry endpoints.
 
-If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
+      If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
 
-- **Remove Test Instance**
-If you don't need the test EC2 instance, you can destroy by running `terraform destroy -auto-approve`.
+5e. **Remove Test Instance**:
+If you don't need the test EC2 instance, you can set `deploy_client_instance` to `false` in Terraform variable input file `aws.auto.tfvars.json` and run `terraform apply -auto-approve`.
 
 ## Cross Account Access
 If the Redpanda cluster and client applications are hosted in **different AWS accounts**, you can use the provided Terraform code to set up an AWS Transit Gateway and share it with the client account using AWS Resource Access Manager (RAM).
@@ -163,9 +167,10 @@ The AWS account hosting the Redpanda cluster is responsible for creating and sha
 
   Use the helper script `scripts/generate_tf_var_input.sh` to generate the required Terraform inputs:
    ```bash
-   ./scripts/generate_tf_var_input.sh <rp_id>
+   export REDPANDA_ID=<redpanda id>
+   ./scripts/generate_tf_var_input.sh ${REDPANDA_ID}
    ```
-   Replace `<rp_id>` with the Redpanda cluster ID.
+   Replace `<redpanda id>` with the Redpanda cluster ID.
 
 The output from the script will be used to set the variables to the TF inputs at the rest the steps. For example:
    ```json
@@ -264,6 +269,7 @@ This step involves the recipient account (Client Applications Account) attaching
   "subnet_ids": ["subnet-034ce442fbb34520b"],
   "vpc_id": "vpc-0a1b2c3d4e5f6g7h8",
   "transit_gateway_id": "tgw-05c562f4a707ac6e5",
+  "accept_attachment": true,
   "region": "us-west-2"
 }
 ```
@@ -272,6 +278,7 @@ This step involves the recipient account (Client Applications Account) attaching
 - Replace `vpc_id` with the ID of the client VPC.
 - Replace `transit_gateway_id` with the ID of the Transit Gateway shared by the owner account.
 - Replace `region` with the AWS region where the Transit Gateway and VPC are located.
+- Set `accept_attachment` to false if all the acounts are in a same organization and auto-acceptance is configured.
 
 ---
 
@@ -398,27 +405,29 @@ ssh_to_ec2_commands = {
 }
 ```
 
+1. **Create Redpanda User** : Create a Redpanda User in Console and assign an ACL that allows all operations. Save the username and password to use in a later step for verifying connectivity.
+
 1. **Configure SSH key**:
    - Use the provided `get_ssh_key_command` to connect to the EC2 instance, e.g.:
      ```bash
      cat terraform.tfstate | jq .outputs.ssh_private_key.value | sed 's/"//g' | awk '{gsub(/\\n/,"\n")}1' > /tmp/35.155.90.103.pem; chmod 600 /tmp/35.155.90.103.pem
      ```
 
-2. **SSH to the EC2 Instance**:
+1. **SSH to the EC2 Instance**:
    - Use the provided `ssh_command` to connect to the EC2 instance, e.g.:
      ```bash
      ssh -i /tmp/35.155.90.103.pem ec2-user@35.155.90.103
      ```
 
-3. **Run the Test Script**:
+1. **Run the Test Script**:
    - Execute the test script to verify connectivity to the Redpanda cluster:
      ```bash
      /usr/local/bin/test-transit-gateway.sh <rp-user-id> <rp-user-password>
      ```
 
-The test script should confirm successful connectivity to the Redpanda cluster's Kafka, HTTP Proxy, and Schema Registry endpoints.
+    The test script should confirm successful connectivity to the Redpanda cluster's Kafka, HTTP Proxy, and Schema Registry endpoints.
 
-If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
+    If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
 
-- **Remove Test Instance**
+1. **Remove Test Instance**
 If you don't need the test EC2 instance, you can destroy by running `terraform destroy -auto-approve`.

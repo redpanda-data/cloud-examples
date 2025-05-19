@@ -95,6 +95,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_instance" "kafka_test" {
+  count         = var.deploy_test_client ? 1 : 0
   ami           = random_id.suffix.keepers.ami_id
   instance_type = "t3.nano"
 
@@ -105,7 +106,8 @@ resource "aws_instance" "kafka_test" {
 }
 
 resource "aws_eip" "test_instance_eip" {
-  instance = aws_instance.kafka_test.id
+  count    = var.deploy_test_client ? 1 : 0
+  instance = aws_instance.kafka_test[0].id
 }
 
 resource "aws_internet_gateway" "gateway" {
@@ -124,7 +126,7 @@ resource "aws_route_table" "route_table" {
 
   # RP route via TGW
   route {
-    cidr_block = data.aws_vpc.rp_vpc.cidr_block
+    cidr_block         = data.aws_vpc.rp_vpc.cidr_block
     transit_gateway_id = local.transit_gateway_id
   }
 

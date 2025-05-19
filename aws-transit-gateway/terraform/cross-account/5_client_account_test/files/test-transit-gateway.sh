@@ -64,7 +64,7 @@ test_kafka_cert_required() {
    set -e
    cert_required=$(echo $result | grep "certificate required")
    [ "$cert_required" == "" ] && return 1
-   echo -e "\n$bolds-- PASS --$bolde"
+   echo -e "\n$bolds-- PASS (Kafka API mTLS) --$bolde"
 }
 
 test_proxy_produce_consume() {
@@ -95,7 +95,7 @@ test_proxy_mtls_cert_required() {
    set -e
    cert_required=$(echo $result | grep "certificate required")
    [ "$cert_required" == "" ] && return 1
-   echo -e "\n$bolds-- PASS --$bolde"
+   echo -e "\n$bolds-- PASS (HTTP Proxy mTLS)--$bolde"
 }
 
 findKafkaUrls() {
@@ -126,7 +126,7 @@ for broker_url in $kafka_broker_urls; do
    export REDPANDA_BROKERS="$broker_url"
    echo ">>> $(date): Testing Kafka API at $REDPANDA_BROKERS......"
    test_rpk_produce_consume $broker_url $kafka_cert $kafka_key
-   echo -e "\n$bolds-- PASS --$bolde"
+   echo -e "\n$bolds-- PASS (Kafka API) --$bolde"
 done
 
 echo ">>> $(date): Testing Redpanda Proxy API at $http_proxy_seed_url......"
@@ -140,26 +140,26 @@ if [ "$schema_registry_cert" != "" ]; then
    result=$(curl -sS -u "$rp_user_id:$rp_user_password" -H "Content-Type: application/vnd.schemaregistry.v1+json" --sslv2 --http2 $schema_registry_url/subjects 2>&1)
    set -e
    echo $result | grep "certificate required"
-   echo -e "\n$bolds-- PASS --$bolde"
+   echo -e "\n$bolds-- PASS (Schema Registry mTLS) --$bolde"
    tls_args="--cert $schema_registry_cert --key $schema_registry_key"
 fi
 
 curl -vv -u "$rp_user_id:$rp_user_password" $tls_args -H "Content-Type: application/vnd.schemaregistry.v1+json" -d '{"schema": "{\"type\": \"string\"}" }' $schema_registry_url/subjects/tgw-$$-value/versions
 curl -vv -u "$rp_user_id:$rp_user_password" $tls_args -H "Content-Type: application/vnd.schemaregistry.v1+json" --sslv2 --http2 $schema_registry_url/schemas/ids/1
 curl -vv -u "$rp_user_id:$rp_user_password" $tls_args -H "Content-Type: application/vnd.schemaregistry.v1+json" --sslv2 --http2 $schema_registry_url/subjects
-echo -e "\n$bolds-- PASS --$bolde"
+echo -e "\n$bolds-- PASS (Schema Registry) --$bolde"
 
 if [ "$console_url" != "" ]; then
    echo ">>> `date`: Testing Console connection at $console_url......"
    curl -vv --connect-timeout 15  -w "%%{http_code}" $console_url
    http_status=$(curl -s -o /dev/null --connect-timeout 15  -w "%%{http_code}" $console_url)
    if [ $http_status = 200 ]; then
-      echo -e "\n$bolds-- PASS --$bolde"
+      echo -e "\n$bolds-- PASS (Console) --$bolde"
    else
-      echo -e "\n$bolds-- FAIL: Expect 200 OK, got $http_status --$bolde"
+      echo -e "\n$bolds-- FAIL (Console): Expect 200 OK, got $http_status --$bolde"
       exit 1
    fi
 fi
 
-echo -e "\n$bolds-- SUCCESS --$bolde"
+echo -e "\n$bolds-- ALL TESTS ARE SUCCESS --$bolde"
 
