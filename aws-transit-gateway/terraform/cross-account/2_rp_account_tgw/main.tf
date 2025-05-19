@@ -79,6 +79,9 @@ resource "aws_ec2_transit_gateway_route_table_association" "rp" {
   transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
+# No need to create a static route for the TGW attachment since we enable propagation.
+# The TGW attachment will automatically propagate the routes to the TGW route table.
+# It does not hurt to create a static route for the TGW attachment.
 resource "aws_ec2_transit_gateway_route" "rp" {
   count                          = local.config_rp_network
   destination_cidr_block         = data.aws_vpc.rp_vpc.cidr_block
