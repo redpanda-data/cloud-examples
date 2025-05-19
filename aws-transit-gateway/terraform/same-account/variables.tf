@@ -90,3 +90,11 @@ variable "transit_gateway_route_table_rp_id" {
   The ID of the Transit Gateway route table to be used for RP VPC.
   HELP
 }
+
+variable "deploy_test_client" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+  Whether to deploy a test client/instance accessing RP services via Transit Gateway.
+  HELP
+}

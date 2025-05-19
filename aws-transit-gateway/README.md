@@ -143,7 +143,7 @@ The test script should confirm successful connectivity to the Redpanda cluster's
 If any issues arise, verify the route tables, security groups, and Transit Gateway attachment configurations.
 
 - **Remove Test Instance**
-If you don't need the test EC2 instance, you can destroy by running `terraform destroy -auto-approve`.
+If you don't need the test EC2 instance, you can set `deploy_client_instance` to `false` in Terraform variable input file `aws.auto.tfvars.json` and run `terraform apply -auto-approve`.
 
 ## Cross Account Access
 If the Redpanda cluster and client applications are hosted in **different AWS accounts**, you can use the provided Terraform code to set up an AWS Transit Gateway and share it with the client account using AWS Resource Access Manager (RAM).
