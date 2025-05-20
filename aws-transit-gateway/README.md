@@ -268,6 +268,7 @@ This step involves the recipient account (Client Applications Account) attaching
   "subnet_ids": ["subnet-034ce442fbb34520b"],
   "vpc_id": "vpc-0a1b2c3d4e5f6g7h8",
   "transit_gateway_id": "tgw-05c562f4a707ac6e5",
+  "accept_attachment": true,
   "region": "us-west-2"
 }
 ```
@@ -276,6 +277,7 @@ This step involves the recipient account (Client Applications Account) attaching
 - Replace `vpc_id` with the ID of the client VPC.
 - Replace `transit_gateway_id` with the ID of the Transit Gateway shared by the owner account.
 - Replace `region` with the AWS region where the Transit Gateway and VPC are located.
+- Set `accept_attachment` to false if all the acounts are in a same organization and auto-acceptance is configured.
 
 ---
 

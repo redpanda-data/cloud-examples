@@ -1,4 +1,5 @@
 resource "aws_ec2_transit_gateway_vpc_attachment_accepter" "rp" {
+  count                         = var.accept_attachment ? 1 : 0
   transit_gateway_attachment_id = var.vpc_attachment_id
 }
 
