@@ -7,8 +7,8 @@ if [ $# -ne 1 ]; then
    exit 1
 fi
 
-if [ "$CLOUD_CLIENT_ID" = "" -o "$CLOUD_CLIENT_SECRET" = "" ]; then
-   echo "Error: Missing the env variables CLOUD_CLIENT_ID and CLOUD_CLIENT_SECRET"
+if [ "$REDPANDA_CLIENT_ID" = "" -o "$REDPANDA_CLIENT_SECRET" = "" ]; then
+   echo "Error: Missing the env variables REDPANDA_CLIENT_ID and REDPANDA_CLIENT_SECRET"
    exit 2
 fi
 
@@ -20,8 +20,8 @@ token=`curl -s --request POST \
          --url $PUBLIC_API_AUTH_ENDPOINT/oauth/token \
          --header 'content-type: application/x-www-form-urlencoded' \
          --data grant_type=client_credentials \
-         --data client_id=$CLOUD_CLIENT_ID \
-         --data client_secret=$CLOUD_CLIENT_SECRET \
+         --data client_id=$REDPANDA_CLIENT_ID \
+         --data client_secret=$REDPANDA_CLIENT_SECRET \
          --data audience=$PUBLIC_API_AUTH_AUDIENCE | jq .access_token | sed 's/"//g'`
 
 get_cluster_response=`curl -s -X GET \
