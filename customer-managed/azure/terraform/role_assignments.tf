@@ -117,3 +117,17 @@ resource "azurerm_role_assignment" "redpanda_connect_api" {
   scope              = azurerm_key_vault.console[0].id
   role_definition_id = azurerm_role_definition.redpanda_connect_api.role_definition_resource_id
 }
+
+resource "azurerm_role_assignment" "redpanda_cluster_secrets_reader" {
+  count              = local.create_role_assignment
+  principal_id       = azurerm_user_assigned_identity.redpanda_cluster.principal_id
+  scope              = azurerm_key_vault.console[0].id
+  role_definition_id = azurerm_role_definition.redpanda_cluster.role_definition_resource_id
+}
+
+resource "azurerm_role_assignment" "redpanda_operator" {
+  count              = local.create_role_assignment
+  principal_id       = azurerm_user_assigned_identity.redpanda_operator.principal_id
+  scope              = azurerm_key_vault.console[0].id
+  role_definition_id = azurerm_role_definition.redpanda_operator.role_definition_resource_id
+}

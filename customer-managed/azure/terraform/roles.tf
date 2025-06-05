@@ -189,3 +189,37 @@ resource "azurerm_role_definition" "redpanda_connect_api" {
 
   depends_on = [azurerm_resource_group.all]
 }
+
+resource "azurerm_role_definition" "redpanda_cluster" {
+  name        = "${var.resource_name_prefix}${var.redpanda_cluster_role_name}"
+  description = "Redpanda Cluster Role"
+  scope       = local.redpanda_resource_group.id
+  assignable_scopes = [
+    local.redpanda_resource_group.id
+  ]
+  permissions {
+    # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
+    data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/getSecret/action",
+    ]
+  }
+
+  depends_on = [azurerm_resource_group.all]
+}
+
+resource "azurerm_role_definition" "redpanda_operator" {
+  name        = "${var.resource_name_prefix}${var.redpanda_operator_role_name}"
+  description = "Redpanda Operator Role"
+  scope       = local.redpanda_resource_group.id
+  assignable_scopes = [
+    local.redpanda_resource_group.id
+  ]
+  permissions {
+    # https://learn.microsoft.com/en-us/azure/role-based-access-control/permissions/security#microsoftkeyvault
+    data_actions = [
+      "Microsoft.KeyVault/vaults/secrets/getSecret/action",
+    ]
+  }
+
+  depends_on = [azurerm_resource_group.all]
+}
