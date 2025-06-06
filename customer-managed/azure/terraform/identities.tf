@@ -69,3 +69,11 @@ resource "azurerm_user_assigned_identity" "redpanda_connect_api" {
 
   depends_on = [azurerm_resource_group.all]
 }
+
+resource "azurerm_user_assigned_identity" "redpanda_operator" {
+  location            = var.region
+  name                = "${var.resource_name_prefix}${var.redpanda_operator_identity_name}"
+  resource_group_name = local.redpanda_iam_resource_group_name
+
+  depends_on = [azurerm_resource_group.all]
+}
