@@ -113,6 +113,14 @@ variable "redpanda_connect_api_identity_name" {
   HELP
 }
 
+variable "redpanda_operator_identity_name" {
+  type        = string
+  default     = "redpanda-operator-uai"
+  description = <<-HELP
+    The name of user assigned identity for Redpanda operator.
+  HELP
+}
+
 ###########################################################################
 # Storage vars: resource groups and roles
 ###########################################################################

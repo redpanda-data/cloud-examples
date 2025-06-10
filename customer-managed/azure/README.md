@@ -60,6 +60,7 @@ Create a JSON file called `byovnet.auto.tfvars.json` inside the Terraform direct
   "kafka_connect_identity_name": "",
   "redpanda_connect_identity_name": "",
   "redpanda_connect_api_identity_name": "",
+  "redpanda_operator_identity_name": "",
   "redpanda_management_storage_account_name": "",
   "redpanda_management_storage_container_name": "",
   "redpanda_tiered_storage_account_name": "",
@@ -108,6 +109,7 @@ kafka_connect_pods_subnet_name = "my-snet-kafka-connect-pods"
 kafka_connect_user_assigned_identity_name = "my-kafka-connect-uai"
 redpanda_connect_user_assigned_identity_name = "my-redpanda-connect-uai"
 redpanda_connect_api_user_assigned_identity_name = "my-redpanda-connect-api-uai"
+redpanda_operator_user_assigned_identity_name = "my-redpanda-operator-uai"
 kafka_connect_vnet_subnet_name = "my-snet-kafka-connect-vnet"
 management_bucket_storage_account_name = "mymanagement"
 management_bucket_storage_container_name = "mymanagement"
@@ -250,6 +252,7 @@ cluster_post_body=`cat << EOF
          "kafka_connect_assigned_identity": { "name" : "$kafka_connect_assigned_identity_name" }
          "redpanda_connect_assigned_identity": { "name" : "$redpanda_connect_assigned_identity_name" }
          "redpanda_connect_api_assigned_identity": { "name" : "$redpanda_connect_api_assigned_identity_name" }
+         "redpanda_operator_assigned_identity": { "name" : "$redpanda_operator_assigned_identity_name" }
        }
      }
   }

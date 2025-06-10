@@ -48,3 +48,11 @@ variable "redpanda_connect_api_role_name" {
     The role name of Redpanda Connect API.
   HELP
 }
+
+variable "redpanda_secrets_reader_role_name" {
+  type        = string
+  default     = "redpanda-secrets-reader-role"
+  description = <<-HELP
+    The role name of Redpanda operator.
+  HELP
+}
