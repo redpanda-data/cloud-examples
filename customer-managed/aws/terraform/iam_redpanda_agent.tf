@@ -483,9 +483,12 @@ data "aws_iam_policy_document" "redpanda_agent2" {
     actions = [
       "iam:CreateServiceLinkedRole",
     ]
-    resources = [
-      "arn:aws:iam::${local.aws_account_id}:role/aws-service-role/eks*",
-    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:AWSServiceName"
+      values   = ["eks.amazonaws.com"]
+    }
   }
 }
 
