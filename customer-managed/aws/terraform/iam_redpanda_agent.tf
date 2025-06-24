@@ -354,7 +354,6 @@ data "aws_iam_policy_document" "redpanda_agent2" {
   statement {
     effect = "Allow"
     actions = [
-      "iam:CreateServiceLinkedRole",
       "iam:GetRole",
       "iam:PassRole",
       "iam:ListAttachedRolePolicies",
@@ -477,6 +476,16 @@ data "aws_iam_policy_document" "redpanda_agent2" {
         ]
       }
     }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:CreateServiceLinkedRole",
+    ]
+    resources = [
+      "arn:aws:iam::${local.aws_account_id}:role/aws-service-role/eks*",
+    ]
   }
 }
 
