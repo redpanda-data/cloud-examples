@@ -354,6 +354,7 @@ data "aws_iam_policy_document" "redpanda_agent2" {
   statement {
     effect = "Allow"
     actions = [
+      "iam:CreateServiceLinkedRole",
       "iam:GetRole",
       "iam:PassRole",
       "iam:ListAttachedRolePolicies",
