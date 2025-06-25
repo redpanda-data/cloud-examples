@@ -3,7 +3,7 @@ resource "aws_eip" "nat_gateway" {
 }
 
 resource "aws_internet_gateway" "redpanda" {
-  count  = local.create_vpc ||  var.create_internet_gateway ? 1 : 0
+  count  = local.create_vpc || var.create_internet_gateway ? 1 : 0
   vpc_id = data.aws_vpc.redpanda.id
 }
 
