@@ -52,6 +52,7 @@ data "aws_iam_policy_document" "redpanda_agent1" {
       # https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsidentityandaccessmanagementiam.html
       "iam:ListPolicies",
       "iam:ListRoles",
+      "iam:GetRole",
 
       # The following route53 actions do not support resource types
       # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonroute53.html
@@ -287,6 +288,7 @@ data "aws_iam_policy_document" "redpanda_agent1" {
     ]
     resources = [
       "arn:aws:eks:*:${local.aws_account_id}:cluster/redpanda-*",
+      "arn:aws:eks:*:${local.aws_account_id}:nodegroup/redpanda-*",
       "arn:aws:eks:*:${local.aws_account_id}:addon/*",
     ]
   }
