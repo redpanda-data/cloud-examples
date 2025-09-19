@@ -13,8 +13,19 @@ data "aws_iam_policy_document" "cluster_autoscaler_policy" {
       # https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html
       "ec2:DescribeInstanceTypes",
       "ec2:DescribeLaunchTemplateVersions",
+
     ]
     resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DescribeNodegroup"
+    ]
+    resources = [
+      "arn:aws:eks:*:${local.aws_account_id}:nodegroup/redpanda-*"
+    ]
   }
 
   statement {
