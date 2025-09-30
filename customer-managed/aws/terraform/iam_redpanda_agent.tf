@@ -653,7 +653,7 @@ data "aws_iam_policy_document" "agent_permissions_boundary_scoped_iam" {
       "arn:aws:iam::${local.aws_account_id}:policy/redpanda-*-redpanda-connect-pipeline-secrets-manager",
       "arn:aws:iam::${local.aws_account_id}:policy/redpanda-*-secrets-reader-operator",
       "arn:aws:iam::${local.aws_account_id}:policy/redpanda-*-cluster-secrets-reader",
-      "arn:aws:iam::${local.aws_account_id}:policy/redpanda-*-redpanda-connect-mcp_server-secrets-manager"
+      "arn:aws:iam::${local.aws_account_id}:policy/redpanda-*"
     ]
   }
 
@@ -697,6 +697,7 @@ data "aws_iam_policy_document" "agent_permissions_boundary_scoped_iam" {
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-redpanda-connect",
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-redpanda-connect-pipeline",
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-operator-role",
+      "arn:aws:iam::${local.aws_account_id}:role/redpanda-*"
     ]
     condition {
       test     = "StringEquals"
@@ -725,7 +726,7 @@ data "aws_iam_policy_document" "agent_permissions_boundary_scoped_iam" {
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-redpanda-connect",
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-redpanda-connect-pipeline",
       "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-operator-role",
-      "arn:aws:iam::${local.aws_account_id}:role/redpanda-*-redpanda-connect-mcp_server"
+      "arn:aws:iam::${local.aws_account_id}:role/redpanda-*"
     ]
   }
 
