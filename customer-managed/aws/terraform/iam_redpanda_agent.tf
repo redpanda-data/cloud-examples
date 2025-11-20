@@ -456,6 +456,7 @@ data "aws_iam_policy_document" "redpanda_agent2" {
     ]
     resources = [
       "arn:aws:autoscaling:*:${local.aws_account_id}:autoScalingGroup:*:autoScalingGroupName/redpanda*",
+      "arn:aws:autoscaling:*:${local.aws_account_id}:autoScalingGroup:*:autoScalingGroupName/eks-redpanda*",
     ]
     dynamic "condition" {
       for_each = var.condition_tags
