@@ -35,6 +35,8 @@ resource "azurerm_role_definition" "redpanda_agent" {
       "Microsoft.ContainerService/managedClusters/agentPools/upgradeNodeImageVersion/action",
       # Without this, cannot create node pools to the specified AKS cluster
       "Microsoft.ContainerService/managedClusters/listClusterUserCredential/action",
+      # Required for ScaleIn/ScaleOut
+      "Microsoft.ContainerService/managedClusters/listClusterAdminCredential/action",
       # Allows joining to a VNet
       "Microsoft.Network/virtualNetworks/read",
       "Microsoft.Network/virtualNetworks/subnets/join/action",
