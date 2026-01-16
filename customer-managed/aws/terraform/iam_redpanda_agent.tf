@@ -1040,7 +1040,8 @@ resource "aws_iam_role_policy_attachment" "redpanda_agent" {
   for_each = {
     "1" = aws_iam_policy.redpanda_agent["1"].arn,
     "2" = aws_iam_policy.redpanda_agent["2"].arn,
-    "3" = aws_iam_policy.redpanda_agent["3"].arn
+    "3" = aws_iam_policy.redpanda_agent["3"].arn,
+    "ssm" = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
   role       = aws_iam_role.redpanda_agent.name
   policy_arn = each.value
