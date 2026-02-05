@@ -235,6 +235,7 @@ data "aws_iam_policy_document" "load_balancer_controller_1" {
       "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeListenerCertificates",
+      "elasticloadbalancing:DescribeListenerAttributes",
       "elasticloadbalancing:DescribeSSLPolicies",
       "elasticloadbalancing:DescribeRules",
       "elasticloadbalancing:DescribeTargetGroups",
