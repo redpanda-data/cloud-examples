@@ -95,21 +95,6 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "rp" {
   transit_gateway_route_table_id = local.transit_gateway_route_table_rp_id
 }
 
-resource "aws_security_group" "rp_tgw" {
-  name        = "${local.resource_prefix}redpanda-tgw-sg"
-  description = "TGW security group for traffic to/from clients"
-  vpc_id      = data.aws_vpc.rp_vpc.id
-}
-
-resource "aws_security_group_rule" "rp_allow_to_client" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  cidr_blocks       = [var.client_vpc_cidr]
-  protocol          = "tcp"
-  security_group_id = aws_security_group.rp_tgw.id
-}
-
 # Routing table from RP VPC to TGW for traffic to clients
 data "aws_route_tables" "rp_route_tables" {
   vpc_id = data.aws_vpc.rp_vpc.id
