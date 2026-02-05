@@ -7,12 +7,6 @@ locals {
   client_vpc_id = data.aws_subnet.client.vpc_id
 }
 
-resource "aws_security_group" "rp" {
-  name        = "${local.resource_prefix}redpanda-sg"
-  description = "Redpanda service security group"
-  vpc_id      = local.client_vpc_id
-}
-
 resource "aws_security_group_rule" "allow_ssh" {
   type              = "ingress"
   from_port         = 22
@@ -22,42 +16,6 @@ resource "aws_security_group_rule" "allow_ssh" {
   security_group_id = data.aws_security_group.default.id
 }
 
-resource "aws_security_group_rule" "kafka_broker_endpoints" {
-  type              = "egress"
-  from_port         = 30092
-  to_port           = 30093
-  cidr_blocks       = [var.rp_vpc_cidr]
-  protocol          = "tcp"
-  security_group_id = aws_security_group.rp.id
-}
-
-resource "aws_security_group_rule" "kafka_seed_endpoint" {
-  type              = "egress"
-  from_port         = 9092
-  to_port           = 9093
-  cidr_blocks       = [var.rp_vpc_cidr]
-  protocol          = "tcp"
-  security_group_id = aws_security_group.rp.id
-}
-
-# Include mTLS+SASL ports
-resource "aws_security_group_rule" "proxy_schema_endpoints" {
-  type              = "egress"
-  from_port         = 30080
-  to_port           = 30083
-  cidr_blocks       = [var.rp_vpc_cidr]
-  protocol          = "tcp"
-  security_group_id = aws_security_group.rp.id
-}
-
-resource "aws_security_group_rule" "console_endpoint" {
-  type              = "egress"
-  from_port         = 443
-  to_port           = 443
-  cidr_blocks       = [var.rp_vpc_cidr]
-  protocol          = "tcp"
-  security_group_id = aws_security_group.rp.id
-}
 resource "tls_private_key" "test" {
   algorithm = "RSA"
   rsa_bits  = 4096
