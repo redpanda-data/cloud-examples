@@ -1,2 +1,7 @@
 .idea
 *.auto.tfvars.json
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
