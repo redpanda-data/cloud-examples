@@ -20,6 +20,9 @@ resource "azurerm_storage_account" "management" {
 
   blob_properties {
     versioning_enabled = false # not supported in StorageV2 with HNS
+    delete_retention_policy {
+      days = 7
+    }
   }
 
   identity {
