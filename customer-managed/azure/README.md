@@ -277,3 +277,28 @@ rpk cloud byoc azure apply --redpanda-id='$rp_id' --subscription-id='$subscripti
 
 ## Check The Status of Cluster Deployment
 You can go to the [Repanda Cloud UI](https://cloud.redpanda.com) to check the progress of the cluster deployment.
+
+## Grant Your User Storage Access
+
+The management storage account has shared access keys disabled and requires Azure AD authentication. The identity running `rpk apply` must have the **Storage Blob Data Contributor** role on the management storage account.
+
+This can be codified in Terraform by setting `grant_caller_management_storage_access = true` in your `byovnet.auto.tfvars.json`:
+
+```json
+"grant_caller_management_storage_access": true
+```
+
+This grants the identity running `rpk apply` the role automatically. Alternatively, you can assign the role manually:
+
+```shell
+ACCOUNT=$(terraform output -raw management_bucket_storage_account_name)
+RESOURCE_GROUP=$(terraform output -raw redpanda_resource_group_name)
+SCOPE=$(az storage account show --name "$ACCOUNT" --resource-group "$RESOURCE_GROUP" --query id -o tsv)
+
+az role assignment create \
+  --assignee $(az ad signed-in-user show --query id -o tsv) \
+  --role "Storage Blob Data Contributor" \
+  --scope "$SCOPE"
+```
+
+> Note: Azure RBAC propagation can take a few minutes. If you see a 403 error immediately after, wait briefly and retry.

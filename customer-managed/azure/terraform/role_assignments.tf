@@ -1,9 +1,15 @@
 locals {
   create_role_assignment                = var.create_role_assignment ? 1 : 0
   agent_role_assignment_resource_groups = var.create_role_assignment ? local.resource_groups : {}
-  redpanda_operator_namespace           = "redpanda"
+}
 
-  # aks_oidc_issuer_url = "https://TODO"
+// Allow the caller running Terraform to access management storage blobs
+resource "azurerm_role_assignment" "caller_management_storage_blob_data_contributor" {
+  count = var.grant_caller_management_storage_access ? 1 : 0
+
+  scope                = azurerm_storage_account.management.id
+  principal_id         = data.azurerm_client_config.current.object_id
+  role_definition_name = "Storage Blob Data Contributor"
 }
 
 // Allow storing Redpanda TF state to storage
