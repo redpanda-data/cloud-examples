@@ -5,3 +5,6 @@
 **/.terraform/*
 *.tfstate
 *.tfstate.*
+
+# Redpanda
+.redpanda-agent
