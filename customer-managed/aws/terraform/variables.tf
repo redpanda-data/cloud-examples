@@ -16,7 +16,11 @@ variable "aws_account_id" {
 
 variable "public_subnet_cidrs" {
   type        = list(string)
-  default     = []
+  default     = [
+    "10.0.1.0/24",
+    "10.0.3.0/24",
+    "10.0.5.0/24"
+  ]
   description = <<-HELP
   One public subnet will be created per cidr in this list.
   HELP
@@ -27,10 +31,7 @@ variable "private_subnet_cidrs" {
   default = [
     "10.0.0.0/24",
     "10.0.2.0/24",
-    "10.0.4.0/24",
-    "10.0.6.0/24",
-    "10.0.8.0/24",
-    "10.0.10.0/24"
+    "10.0.4.0/24"
   ]
   description = <<-HELP
   One private subnet will be created per cidr in this list.
