@@ -273,3 +273,16 @@ output "vault" {
     "redpanda-console" : var.redpanda_console_key_vault_name != "" ? azurerm_key_vault.console[0].id : ""
   })
 }
+
+output "gateway_egress" {
+  description = "Gateway-transit egress resources (empty values when not enabled)"
+  value = jsonencode({
+    "enabled" : local.use_gateway_egress,
+    "hub_vnet_id" : local.use_gateway_egress ? local.resolved_hub_vnet_id : "",
+    "hub_firewall_subnet_id" : local.create_hub_vnet ? azurerm_subnet.hub_firewall[0].id : "",
+    "hub_firewall_private_ip" : local.use_gateway_egress ? local.resolved_firewall_ip : "",
+    "hub_firewall_public_ip" : local.create_hub_vnet && var.create_hub_firewall ? azurerm_public_ip.hub_firewall[0].ip_address : "",
+    "hub_vnet_peering_name" : local.use_gateway_egress && var.create_vnet_peering ? azurerm_virtual_network_peering.to_hub[0].name : "",
+    "route_table_id" : local.use_gateway_egress ? azurerm_route_table.gateway_egress[0].id : "",
+  })
+}
