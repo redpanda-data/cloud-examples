@@ -2,6 +2,18 @@ locals {
   allowed_subnet_ids = [for s in azurerm_subnet.private : s.id]
 }
 
+# Azure requires the Microsoft.KeyVault service endpoint to be fully propagated
+# on a subnet before the subnet ID can be added to a key vault's network ACL.
+# Without this wait, a new subnet's ACL entry is silently dropped by Azure even
+# though Terraform reports success, causing state drift.
+resource "time_sleep" "wait_for_subnet_service_endpoints" {
+  depends_on      = [azurerm_subnet.private]
+  create_duration = "30s"
+  triggers = {
+    subnet_ids = join(",", sort(local.allowed_subnet_ids))
+  }
+}
+
 resource "azurerm_key_vault" "vault" {
   count               = var.redpanda_management_key_vault_name != "" ? 1 : 0
   name                = "${var.resource_name_prefix}${var.redpanda_management_key_vault_name}"
@@ -43,7 +55,7 @@ resource "azurerm_key_vault" "vault" {
 
   tags = var.tags
 
-  depends_on = [azurerm_resource_group.all]
+  depends_on = [azurerm_resource_group.all, time_sleep.wait_for_subnet_service_endpoints]
 }
 
 resource "azurerm_key_vault" "console" {
@@ -87,5 +99,5 @@ resource "azurerm_key_vault" "console" {
 
   tags = var.tags
 
-  depends_on = [azurerm_resource_group.all]
+  depends_on = [azurerm_resource_group.all, time_sleep.wait_for_subnet_service_endpoints]
 }
