@@ -9,7 +9,7 @@ output "transit_gateway_arn" {
 }
 
 output "ram_resource_share_arn" {
-  value       = local.share_with_redpanda ? aws_ram_resource_share.tgw[0].arn : null
+  value       = local.create_ram_share ? aws_ram_resource_share.tgw[0].arn : null
   description = "ARN of the RAM share. Redpanda must accept this invitation before attaching. Null when hub and spoke share the same account."
 }
 

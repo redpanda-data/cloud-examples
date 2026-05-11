@@ -11,8 +11,8 @@ variable "common_prefix" {
 }
 
 variable "vpc_cidr" {
-  type    = string
-  default = "100.64.0.0/16"
+  type        = string
+  default     = "100.64.0.0/16"
   description = <<-HELP
   CIDR for the hub/egress VPC.
   MUST NOT overlap with any spoke VPC CIDRs — TGW routing breaks silently when CIDRs
@@ -35,8 +35,8 @@ variable "private_subnet_cidrs" {
 }
 
 variable "spoke_cidrs" {
-  type = list(string)
-  default = ["10.0.0.0/16"]
+  type        = list(string)
+  default     = ["10.0.0.0/16"]
   description = <<-HELP
   CIDRs of all spoke VPCs that will attach to this TGW.
   Used to install return routes in the hub's public subnet so NAT Gateway replies
@@ -48,12 +48,17 @@ variable "spoke_cidrs" {
   HELP
 }
 
-variable "redpanda_aws_account_id" {
+variable "hub_aws_account_id" {
   type        = string
-  default     = "472797112831"
   description = <<-HELP
-  Redpanda's AWS account ID. The TGW will be shared with this account via RAM so
-  Redpanda can attach the BYOC spoke VPC to it.
+  AWS account ID where the transit gateway will be created.
+  HELP
+}
+
+variable "spoke_aws_account_id" {
+  type        = string
+  description = <<-HELP
+  AWS account id where the redpanda cluster will be created.
   HELP
 }
 
@@ -61,4 +66,12 @@ variable "default_tags" {
   type        = map(string)
   default     = {}
   description = "Tags applied to all resources."
+}
+
+variable "ignore_tags" {
+  type        = list(string)
+  default     = []
+  description = <<-HELP
+  List of tag keys that will be ignored during reconciliation of this terraform
+  HELP
 }
