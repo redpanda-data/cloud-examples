@@ -57,6 +57,7 @@ variable "hub_aws_account_id" {
 
 variable "spoke_aws_account_id" {
   type        = string
+  default     = ""
   description = <<-HELP
   AWS account id where the redpanda cluster will be created.
   HELP
