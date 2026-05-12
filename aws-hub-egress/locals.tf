@@ -1,9 +1,5 @@
 locals {
-  hub_aws_account_id = (
-    var.hub_aws_account_id != ""
-    ? var.hub_aws_account_id
-    : data.aws_caller_identity.current.account_id
-  )
+  hub_aws_account_id = data.aws_caller_identity.current.account_id
   spoke_aws_account_id = (
     var.spoke_aws_account_id != ""
     ? var.spoke_aws_account_id

@@ -48,13 +48,6 @@ variable "spoke_cidrs" {
   HELP
 }
 
-variable "hub_aws_account_id" {
-  type        = string
-  description = <<-HELP
-  AWS account ID where the transit gateway will be created.
-  HELP
-}
-
 variable "spoke_aws_account_id" {
   type        = string
   default     = ""
