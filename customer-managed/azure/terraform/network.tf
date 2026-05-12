@@ -28,6 +28,8 @@ resource "azurerm_subnet" "private" {
   virtual_network_name = local.vnet_name
   address_prefixes     = [each.value.cidr]
 
+  private_endpoint_network_policies = "Enabled"
+
   # Use Azure's internal network to reach out to the following Azure services
   service_endpoints = [
     "Microsoft.Storage.Global",
@@ -50,6 +52,8 @@ resource "azurerm_subnet" "public" {
   resource_group_name  = local.redpanda_network_resource_group_name
   virtual_network_name = local.vnet_name
   address_prefixes     = [each.value.cidr]
+
+  private_endpoint_network_policies = "Enabled"
 
   # Use Azure's internal network to reach out to the following Azure services
   service_endpoints = [

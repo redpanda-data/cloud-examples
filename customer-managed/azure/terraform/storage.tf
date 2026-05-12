@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "management" {
   access_tier              = "Hot"
 
   public_network_access_enabled   = true
-  allow_nested_items_to_be_public = true
+  allow_nested_items_to_be_public = false
 
   cross_tenant_replication_enabled = false
   shared_access_key_enabled        = false
@@ -38,8 +38,8 @@ resource "azurerm_storage_account" "management" {
 resource "azurerm_storage_container" "management" {
   ###### TODO change var. to local.
   name                  = "${local.resource_name_prefix}${var.redpanda_management_storage_container_name}"
-  storage_account_name  = azurerm_storage_account.management.name
-  container_access_type = "blob"
+  storage_account_id    = azurerm_storage_account.management.id
+  container_access_type = "private"
   depends_on = [
     azurerm_storage_account.management
   ]
@@ -62,7 +62,7 @@ resource "azurerm_storage_account" "tiered_storage" {
   cross_tenant_replication_enabled  = false
   shared_access_key_enabled         = false
   infrastructure_encryption_enabled = true
-  enable_https_traffic_only         = true
+  https_traffic_only_enabled        = true
   default_to_oauth_authentication   = true
 
   blob_properties {
@@ -75,7 +75,6 @@ resource "azurerm_storage_account" "tiered_storage" {
 }
 
 resource "azurerm_storage_container" "tiered_storage" {
-  name                  = "${local.resource_name_prefix}${var.redpanda_tiered_storage_container_name}"
-  storage_account_name  = azurerm_storage_account.tiered_storage.name
-  container_access_type = "private"
+  name               = "${local.resource_name_prefix}${var.redpanda_tiered_storage_container_name}"
+  storage_account_id = azurerm_storage_account.tiered_storage.id
 }
