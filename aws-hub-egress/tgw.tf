@@ -42,6 +42,6 @@ resource "aws_ram_resource_association" "tgw" {
 
 resource "aws_ram_principal_association" "redpanda" {
   count              = local.create_ram_share ? 1 : 0
-  principal          = var.spoke_aws_account_id
+  principal          = local.spoke_aws_account_id
   resource_share_arn = aws_ram_resource_share.tgw[0].arn
 }
