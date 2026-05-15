@@ -1,10 +1,21 @@
 # Overview
 
-This repository contains the code that deploys the resources customers are responsible for creating in association with a Redpanda customer-managed Azure cluster.
-These resources should be created in advance by the customer and then provided to Redpanda during cluster creation.
-The code is provided in [Terraform](https://developer.hashicorp.com/terraform) and Azure CLI (TODO).
+This [Terraform](https://developer.hashicorp.com/terraform) configuration invokes the
+[`redpanda-data/redpanda-byovnet/azure`](https://registry.terraform.io/modules/redpanda-data/redpanda-byovnet/azure/latest)
+module to create the Azure resources customers are responsible for in association with a Redpanda
+customer-managed VNET cluster. These resources should be created in advance by the customer and
+then provided to Redpanda during cluster creation. An Azure CLI variant is TODO.
 
-> There may be resources in this repository that already exist within your environment (for example, the VNET) that you don't want to create. Variables are provided for this purpose.
+> There may be resources created by the module that already exist within your environment (for example, the VNET) that
+> you don't want to create. Variables are provided for this purpose.
+
+> This code is provided as an example and should be reviewed to ensure it adheres to policies within your organization.
+> The full set of resources is defined in the module source — see the
+> [module repository](https://github.com/redpanda-data/terraform-azure-redpanda-byovnet) for a complete inventory.
+
+> **Migrating from a previous version:** if you have already applied an earlier copy of this Terraform (before it was
+> refactored to consume the module), the new `main.tf` includes `moved {}` blocks that relocate each existing resource
+> to its new `module.byovnet.*` address. Running `terraform plan` against an existing state should show **no changes**.
 
 # Customer Managed Resources
 Customer Managed Resources can be broken down into the following groups. You can walk through the code to get the exact list of the resources required to create and deploy Redpanda cluster.
@@ -37,7 +48,7 @@ The variable files contain the variables that allow you to modify to meet your s
 - `vars.iam.tf`: It contains the variables related to IAM roles.
 - `vars.misc.tf`: It contains the variables, region, zones, tags and resource name prefix.
 
-You can get the description of each variable in [here](./terraform/README.md).
+You can find the description of each variable in the [module documentation](https://registry.terraform.io/modules/redpanda-data/redpanda-byovnet/azure/latest?tab=inputs).
 
 Create a JSON file called `byovnet.auto.tfvars.json` inside the Terraform directory.
 
