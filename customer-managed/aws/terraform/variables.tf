@@ -185,16 +185,6 @@ variable "enable_redpanda_connect" {
   HELP
 }
 
-# tflint-ignore: terraform_unused_declarations
-variable "create_private_s3_route" {
-  type        = bool
-  default     = false
-  description = <<-HELP
-  DEPRECATED: When private subnets are created externally, s3 routes will never be created here and are also expected
-  to be created externally. This variable will be removed in a future release.
-  HELP
-}
-
 variable "create_eks_nodegroup_service_linked_role" {
   type        = bool
   default     = true

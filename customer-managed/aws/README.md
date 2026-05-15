@@ -1,13 +1,21 @@
 # Overview
 
-This repository contains [Terraform](https://developer.hashicorp.com/terraform) code that describes the resources
-customers are responsible for creating in association with a Redpanda customer-managed VPC cluster. These resources
-should be created in advance by the customer and then provided to Redpanda during cluster creation.
+This [Terraform](https://developer.hashicorp.com/terraform) configuration invokes the
+[`redpanda-data/redpanda-byovpc/aws`](https://registry.terraform.io/modules/redpanda-data/redpanda-byovpc/aws/latest)
+module to create the AWS resources customers are responsible for in association with a Redpanda
+customer-managed VPC cluster. These resources should be created in advance by the customer and then
+provided to Redpanda during cluster creation.
 
-> There may be resources in this repository that already exist within your environment (for example, the VPC) that you 
+> There may be resources created by the module that already exist within your environment (for example, the VPC) that you
 > don't want to create. Variables are provided for this purpose.
 
-> This code is provided as examples and should be reviewed to ensure it adheres to policies within your organization.
+> This code is provided as an example and should be reviewed to ensure it adheres to policies within your organization.
+> The full set of resources is defined in the module source — see the
+> [module repository](https://github.com/redpanda-data/terraform-aws-redpanda-byovpc) for a complete inventory.
+
+> **Migrating from a previous version:** if you have already applied an earlier copy of this Terraform (before it was
+> refactored to consume the module), the new `main.tf` includes `moved {}` blocks that relocate each existing resource
+> to its new `module.byovpc.*` address. Running `terraform plan` against an existing state should show **no changes**.
 
 # Prerequisites
 
