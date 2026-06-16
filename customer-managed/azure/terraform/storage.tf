@@ -55,10 +55,11 @@ resource "azurerm_storage_account" "tiered_storage" {
   is_hns_enabled           = true
   access_tier              = "Hot"
 
-  # WARNING/FIXME: Disabling public access breaks Terraform
-  # and the Azure Portal.
+  # WARNING/FIXME: Disabling public network access breaks Terraform
+  # and the Azure Portal, so public_network_access_enabled stays true.
+  # Anonymous blob access is still denied via allow_nested_items_to_be_public.
   public_network_access_enabled     = true
-  allow_nested_items_to_be_public   = true
+  allow_nested_items_to_be_public   = false
   cross_tenant_replication_enabled  = false
   shared_access_key_enabled         = false
   infrastructure_encryption_enabled = true
