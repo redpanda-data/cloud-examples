@@ -1,4 +1,8 @@
 terraform {
+  # The byovpc module uses terraform_data, a 1.4 builtin. Declared here too so a root module on an
+  # older Terraform fails with a version message rather than an unsupported-resource-type error.
+  required_version = ">= 1.4.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

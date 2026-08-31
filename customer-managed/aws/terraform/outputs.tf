@@ -52,6 +52,11 @@ output "private_subnet_arns" {
   description = "List of private subnet ARNs."
 }
 
+output "public_subnet_arns" {
+  value       = module.byovpc.public_subnet_arns
+  description = "List of public subnet ARNs. Supply these as the network's public subnets when creating a dual listener cluster."
+}
+
 output "redpanda_agent_security_group_arn" {
   value       = module.byovpc.redpanda_agent_security_group_arn
   description = "ARN of the redpanda agent security group."
