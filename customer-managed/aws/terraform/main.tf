@@ -12,6 +12,7 @@ module "byovpc" {
   private_subnet_cidrs     = var.private_subnet_cidrs
   private_subnet_ids       = var.private_subnet_ids
   public_subnet_cidrs      = var.public_subnet_cidrs
+  public_subnet_ids        = var.public_subnet_ids
   network_exclude_zone_ids = var.network_exclude_zone_ids
 
   condition_tags = var.condition_tags
@@ -19,6 +20,8 @@ module "byovpc" {
   ignore_tags    = var.ignore_tags
 
   enable_private_link                      = var.enable_private_link
+  enable_public_private_connections        = var.enable_public_private_connections
+  public_subnet_map_public_ip_on_launch    = var.public_subnet_map_public_ip_on_launch
   enable_redpanda_connect                  = var.enable_redpanda_connect
   create_internet_gateway                  = var.create_internet_gateway
   create_rpk_user                          = var.create_rpk_user
