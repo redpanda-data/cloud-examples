@@ -46,6 +46,17 @@ variable "private_subnet_ids" {
   HELP
 }
 
+variable "public_subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-HELP
+  List of existing public subnet ids, for a VPC created outside this module. Required for a dual
+  listener cluster, which places broker nodes and the internet-facing seed load balancer in public
+  subnets. Each subnet must have a route to an internet gateway and be tagged
+  "kubernetes.io/role/elb" = 1. Mutually exclusive with public_subnet_cidrs.
+  HELP
+}
+
 variable "zones" {
   type = list(string)
   default = [
@@ -123,7 +134,6 @@ variable "create_internet_gateway" {
   HELP
 }
 
-
 variable "vpc_id" {
   type        = string
   default     = ""
@@ -147,6 +157,36 @@ variable "force_destroy_cloud_storage" {
   description = <<-HELP
   When true the cloud storage bucket will be destroyed when running terraform destroy, even if it has contents.
   Normally recommended to keep this set to false, but may be set to true during certain types of testing.
+  HELP
+}
+
+variable "force_destroy_management_bucket" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+  When true the management bucket will be destroyed when running terraform destroy, even if it contains
+  versioned Terraform state objects. Defaults to true to preserve existing module behavior. Set to false in
+  production deployments where the operator wants terraform destroy to fail rather than silently delete state.
+  HELP
+}
+
+variable "create_s3_gateway_endpoint" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+  When true the module creates an S3 gateway VPC endpoint inside the VPC. Set to false when the BYOVPC already
+  has an S3 gateway endpoint attached to its private route tables (managed by the customer's networking IaC) to
+  avoid duplicating the endpoint.
+  HELP
+}
+
+variable "public_subnet_map_public_ip_on_launch" {
+  type        = bool
+  default     = true
+  description = <<-HELP
+  Controls map_public_ip_on_launch on subnets created from var.public_subnet_cidrs. Defaults to true to preserve
+  existing module behavior. Set to false in environments where SCPs deny ec2:ModifySubnetAttribute or where the
+  operator does not want auto-assigned public IPs.
   HELP
 }
 
@@ -185,6 +225,23 @@ variable "enable_redpanda_connect" {
   HELP
 }
 
+variable "enable_redpanda_sql" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  When true grants additional permissions and resources required by Redpanda SQL.
+  HELP
+}
+
+variable "create_private_s3_route" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  DEPRECATED: When private subnets are created externally, s3 routes will never be created here and are also expected
+  to be created externally. This variable will be removed in a future release.
+  HELP
+}
+
 variable "create_eks_nodegroup_service_linked_role" {
   type        = bool
   default     = true
@@ -192,5 +249,34 @@ variable "create_eks_nodegroup_service_linked_role" {
   When true, ensures the EKS node group service-linked role exists in the AWS account. This role is required for
   EKS managed node groups and may not exist in brand new AWS accounts. Set to false if you manage this role
   separately or if the automatic creation is causing issues in your environment.
+  HELP
+}
+
+variable "enable_glue_iceberg_catalog" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  When true, permits AWS Glue Data Catalog access for the Iceberg REST catalog
+  integration (cluster configuration `iceberg_catalog_type=rest` pointed at the
+  Glue endpoint with `aws_sigv4`/`sts`): adds the Glue actions to the agent
+  permissions boundary and creates the `glue-iceberg` policy, both scoped to
+  the Glue catalog/database/table ARNs in this account and region. The brokers
+  and the Redpanda SQL engine call Glue via agent-created IRSA roles that
+  exist only after cluster creation — see the "AWS Glue Iceberg catalog"
+  section of the README for the post-cluster attachments of
+  `glue_iceberg_policy_arn`.
+  HELP
+}
+
+variable "enable_public_private_connections" {
+  type        = bool
+  default     = false
+  description = <<-HELP
+  Allow this VPC to host a cluster that has both public and private connections. Adds an ingress rule for the
+  public connection's Redpanda broker ports (30042-30044) from 0.0.0.0/0 on the Redpanda node security
+  group. The private connection's ports (30092-30094) stay restricted to private ranges: the public connection
+  is reached over the internet-facing seed load balancer and these node ports, while the private
+  connection remains reachable only from inside the VPC.
+  Requires public subnets in every AZ that hosts broker nodes (see public_subnet_ids).
   HELP
 }
